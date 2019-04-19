@@ -24,7 +24,7 @@ import java.io.File
 /**
  * 图片压缩界面
  */
-class CompressActivity : BaseActivity(), OnPictureCompressionListener, Animator.AnimatorListener {
+class CompressActivity : BaseActivity(), OnPictureCompressionListener {
     //从相册选择图片的请求码
     private val REQUEST_CHOICE_PICTURE_CODE = 0x0001
     private val REQUEST_PERMISSION_CODE = 1
@@ -33,6 +33,10 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener, Animator.
     private var preFileSize: String = ""  //记录前一次的文件大小
     private lateinit var savePath: File
     private var isSave: Boolean = false
+    private val COMPRESS = "compress"
+    private val SAVE = "save"
+    private lateinit var compressAnimationListener: CompressAnimationListener
+    private lateinit var saveAnimationListener: SaveAnimationListener
 
     override fun setPageLayout() {
         setContentView(R.layout.activity_compress_layout, true, true)
@@ -44,7 +48,10 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener, Animator.
 
     override fun initWidget() {
         setSystemBarViewLayoutParamsR(activity_compress_systemBar_View)
-        compress_LottieAnimationView.addAnimatorListener(this)
+        compressAnimationListener = CompressAnimationListener();
+        compress_LottieAnimationView.addAnimatorListener(compressAnimationListener)
+        saveAnimationListener = SaveAnimationListener()
+        save_LottieAnimationView.addAnimatorListener(saveAnimationListener)
     }
 
     override fun setOnClickListener() {
@@ -57,7 +64,6 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener, Animator.
         //开始压缩按钮
         tv_compress_picture.setOnClickListener {
             PictureCompression.compressionPicture(this, file, this)
-            playAnimation()
         }
 
         //保存按钮
@@ -66,19 +72,7 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener, Animator.
                 showToast(getString(R.string.picture_save_success))
                 return@setOnClickListener
             }
-            val rootPath = Environment.getExternalStorageDirectory().path
-            val fileDir = File(rootPath + "/" + getString(R.string.app_name))
-            if (!fileDir.exists()) fileDir.mkdirs()
-            savePath = File(fileDir.path, "${System.currentTimeMillis()}.jpg")
-            if (!savePath.exists()) savePath.createNewFile()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (PermissionUtil.request(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_PERMISSION_CODE)) {
-                    showSaveSuccess(FileUtil.copyFile(file.path, savePath.path))
-                }
-            } else {
-                showSaveSuccess(FileUtil.copyFile(file.path, savePath.path))
-            }
+            playAnimation(SAVE)
         }
     }
 
@@ -86,7 +80,7 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener, Animator.
      * 图片开始压缩
      */
     override fun onCompressStart() {
-
+        playAnimation(COMPRESS)
     }
 
     /**
@@ -136,19 +130,38 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener, Animator.
     }
 
     /**
-     * 播放压缩动画
+     * 播放动画
      */
-    private fun playAnimation() {
-        compress_LottieAnimationView.visibility = View.VISIBLE
-        compress_LottieAnimationView.playAnimation()
+    private fun playAnimation(type: String) {
+        when(type){
+            COMPRESS ->{
+                compress_LottieAnimationView.visibility = View.VISIBLE
+                compress_LottieAnimationView.playAnimation()
+            }
+            SAVE ->{
+                save_LottieAnimationView.visibility = View.VISIBLE
+                save_LottieAnimationView.playAnimation()
+                tv_compress_hint.text = getString(R.string.saveing)
+                tv_compress_save_button.isEnabled = false
+            }
+        }
     }
 
     /**
-     * 停止压缩动画
+     * 停止动画
      */
-    private fun stopAnimation() {
-        compress_LottieAnimationView.visibility = View.INVISIBLE
-        compress_LottieAnimationView.pauseAnimation()
+    private fun stopAnimation(type: String) {
+        when(type){
+            COMPRESS ->{
+                compress_LottieAnimationView.visibility = View.INVISIBLE
+                compress_LottieAnimationView.pauseAnimation()
+            }
+            SAVE ->{
+                save_LottieAnimationView.visibility = View.INVISIBLE
+                save_LottieAnimationView.pauseAnimation()
+                tv_compress_save_button.isEnabled = true
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -205,28 +218,73 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener, Animator.
         isSave = isSuccess
     }
 
-    override fun onAnimationStart(animation: Animator?) {
-        showPicture("")
-        tv_compress_loading.visibility = View.VISIBLE
+    override fun onDestroy() {
+        super.onDestroy()
+        compress_LottieAnimationView.removeAnimatorListener(compressAnimationListener)
+        save_LottieAnimationView.removeAnimatorListener(saveAnimationListener)
     }
 
-    override fun onAnimationCancel(animation: Animator?) {
+    /**
+     * 压缩动画监听类
+     */
+    private inner class CompressAnimationListener : Animator.AnimatorListener {
 
-    }
-
-    override fun onAnimationEnd(animation: Animator?) {
-        stopAnimation()
-        showPicture(file.path)
-        showPictureSize(getFileSize())
-        if (curFileSize == preFileSize) {
-            setViewVisibility(View.VISIBLE)
-            setButtonIsEnabled(true)
+        override fun onAnimationStart(animation: Animator?) {
+            showPicture("")
+            tv_compress_loading.visibility = View.VISIBLE
         }
-        tv_compress_loading.visibility = View.INVISIBLE
-        tv_compress_picture.text = getString(R.string.second_compress)
+
+        override fun onAnimationCancel(animation: Animator?) {
+
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+            stopAnimation(COMPRESS)
+            showPicture(file.path)
+            showPictureSize(getFileSize())
+            if (curFileSize == preFileSize) {
+                setViewVisibility(View.VISIBLE)
+                setButtonIsEnabled(true)
+            }
+            tv_compress_loading.visibility = View.INVISIBLE
+            tv_compress_picture.text = getString(R.string.second_compress)
+        }
+
+        override fun onAnimationRepeat(animation: Animator?) {
+
+        }
     }
 
-    override fun onAnimationRepeat(animation: Animator?) {
+    /**
+     * 保存动画监听类
+     */
+    private inner class SaveAnimationListener : Animator.AnimatorListener {
+        override fun onAnimationStart(animation: Animator?) {
+            val rootPath = Environment.getExternalStorageDirectory().path
+            val fileDir = File(rootPath + "/" + getString(R.string.app_name)+"/压缩图片")
+            if (!fileDir.exists()) fileDir.mkdirs()
+            savePath = File(fileDir.path, "${System.currentTimeMillis()}.jpg")
+            if (!savePath.exists()) savePath.createNewFile()
+        }
 
+        override fun onAnimationCancel(animation: Animator?) {
+
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (PermissionUtil.request(this@CompressActivity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_PERMISSION_CODE)) {
+                    showSaveSuccess(FileUtil.copyFile(file.path, savePath.path))
+                }
+            } else {
+                showSaveSuccess(FileUtil.copyFile(file.path, savePath.path))
+            }
+            stopAnimation(SAVE)
+        }
+
+        override fun onAnimationRepeat(animation: Animator?) {
+
+        }
     }
 }

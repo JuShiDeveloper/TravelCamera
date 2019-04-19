@@ -107,6 +107,16 @@
             android:layout_centerHorizontal="true"
             android:visibility="invisible"/>
 
+        <com.jushi.library.lottie.LottieAnimationView
+            android:id="@+id/save_LottieAnimationView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            app:lottie_autoPlay="false"
+            app:lottie_fileName="animation_4.json"
+            app:lottie_loop="false"
+            android:visibility="invisible"/>
+
     </RelativeLayout>
 
     <TextView
