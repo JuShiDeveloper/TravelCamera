@@ -57,12 +57,16 @@
         android:id="@+id/rl_camera_controller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:padding="5dp">
 
-        <ImageView
+        <View
             android:id="@+id/Camera_Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            android:background="@drawable/bg_camera_button" />
 
     </RelativeLayout>
 

@@ -33,7 +33,7 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
     }
 
     override fun initWidget() {
-        setSystemBarViewLayoutParamsL(camera_systemBar)
+        setSystemBarViewLayoutParamsR(camera_systemBar)
         initSurfaceView()
         setOnTouchListener()
     }
