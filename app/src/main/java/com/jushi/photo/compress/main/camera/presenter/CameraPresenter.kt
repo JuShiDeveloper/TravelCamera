@@ -10,12 +10,13 @@ import android.os.Bundle
 import android.view.SurfaceHolder
 import com.jushi.photo.compress.main.camera.helper.CameraHelper
 import com.jushi.photo.compress.main.camera.utils.FlashMode
+import com.jushi.photo.compress.main.camera.utils.SavePictureUtil
 import com.jushi.photo.compress.main.camera.view.CameraView
 import travel.camera.photo.compress.R
 import java.lang.reflect.Method
 import java.util.*
 
-class CameraPresenter(private val cameraView: CameraView, private val context: Context) : Camera.PictureCallback {
+class CameraPresenter(private val cameraView: CameraView, private val context: Context) : Camera.PictureCallback, SavePictureUtil.PictureSaveListener {
     private val screenWidth = (context as Activity).windowManager.defaultDisplay.width
     private val screenHeight = (context as Activity).windowManager.defaultDisplay.height
     private var cameraHelper: CameraHelper = CameraHelper(context)
@@ -29,6 +30,7 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
     private lateinit var holder: SurfaceHolder
     private var curZoomValue = 0 //放大缩小
     private lateinit var bundle: Bundle
+    private lateinit var data: ByteArray
 
     /**
      * 改变闪光灯你状态
@@ -326,14 +328,40 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
     }
 
     /**
-     * 获取拍摄的照片
+     * 获取拍摄的照片（点击拍照按钮时调用）
      */
     fun takingPicture() {
         camera!!.takePicture(null, null, this)
     }
 
+    /**
+     * 重新开始预览
+     */
+    fun startPreview() {
+        if (camera == null) return
+        camera!!.startPreview()
+    }
+
     override fun onPictureTaken(data: ByteArray?, camera: Camera?) {
+        this.camera = camera
+        this.data = data!!
         bundle = Bundle()
         bundle.putByteArray("pictureArray", data)
+        cameraView.isShowConfirmLayout(true)
+    }
+
+    /**
+     * 确认获取图片（点击确认（√）按钮时调用）
+     */
+    fun confirmTakePicture() {
+        SavePictureUtil(data, currentCameraId, context, this).execute()
+    }
+
+    /**
+     * 拍摄的图片保存成功
+     */
+    override fun pictureSaveSuccess() {
+        cameraView.pictureSaveSuccess()
+        startPreview()
     }
 }

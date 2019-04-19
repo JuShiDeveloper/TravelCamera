@@ -67,6 +67,15 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
             CameraGrid.visibility = View.INVISIBLE
             cameraPresenter.takingPicture()
         }
+        //取消（×）按钮
+        cancel_picture_button.setOnClickListener {
+            isShowConfirmLayout(false)
+            cameraPresenter.startPreview()
+        }
+        //确认（√）按钮
+        confirm_button.setOnClickListener {
+            cameraPresenter.confirmTakePicture()
+        }
     }
 
     private fun surfaceViewClick() {
@@ -166,5 +175,27 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
         val x = event.getX(0) - event.getX(1)
         val y = event.getY(0) - event.getY(1)
         return Math.sqrt((x * x + y * y).toDouble()).toFloat()
+    }
+
+    /**
+     * 是否显示确认（√）以及取消（×）按钮的布局，隐藏拍照按钮的布局
+     */
+    override fun isShowConfirmLayout(isShow: Boolean) {
+        if (isShow) {
+            rl_confirm_picture.visibility = View.VISIBLE
+            rl_camera_controller.visibility = View.INVISIBLE
+        } else {
+            rl_confirm_picture.visibility = View.INVISIBLE
+            rl_camera_controller.visibility = View.VISIBLE
+            CameraGrid.visibility = View.VISIBLE
+        }
+    }
+
+    /**
+     * 拍照保存成功
+     */
+    override fun pictureSaveSuccess() {
+        showToast(getString(R.string.picture_success_save))
+        isShowConfirmLayout(false)
     }
 }
