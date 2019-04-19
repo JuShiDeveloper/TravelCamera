@@ -14,7 +14,7 @@ class MeiHuaActivity :BaseActivity(){
 
     }
 
-    override fun setOnClickListener() {
+    override fun setOnViewListener() {
 
     }
 }

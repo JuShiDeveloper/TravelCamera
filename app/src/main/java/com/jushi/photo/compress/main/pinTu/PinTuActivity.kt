@@ -14,7 +14,7 @@ class PinTuActivity :BaseActivity(){
 
     }
 
-    override fun setOnClickListener() {
+    override fun setOnViewListener() {
 
     }
 }

@@ -1,6 +1,5 @@
 package com.jushi.library.base
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -21,7 +20,7 @@ abstract class BaseActivity : AppCompatActivity() {
         setPageLayout()
         initData()
         initWidget()
-        setOnClickListener()
+        setOnViewListener()
     }
 
     /**
@@ -84,7 +83,7 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * 设置点击事件
      */
-    abstract fun setOnClickListener()
+    abstract fun setOnViewListener()
 
     /**
      * activity跳转（不带数据跳转）
@@ -106,7 +105,7 @@ abstract class BaseActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun showToast(msg: String) {
+     fun showToast(msg: String) {
         ToastUtils.showToast(this, msg)
     }
 

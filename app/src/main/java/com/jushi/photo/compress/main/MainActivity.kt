@@ -33,7 +33,7 @@ class MainActivity : BaseActivity() {
         setSystemBarViewLayoutParamsL(systemBar_View)
     }
 
-    override fun setOnClickListener() {
+    override fun setOnViewListener() {
         MeiHuaButton.setOnClickListener {
             //美化按钮点击事件
             startActivity(MeiHuaActivity::class.java)

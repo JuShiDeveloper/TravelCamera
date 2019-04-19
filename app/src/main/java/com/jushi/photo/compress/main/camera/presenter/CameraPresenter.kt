@@ -3,15 +3,20 @@ package com.jushi.photo.compress.main.camera.presenter
 import android.app.Activity
 import android.content.Context
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.hardware.Camera
 import android.os.Build
 import android.view.SurfaceHolder
 import com.jushi.photo.compress.main.camera.helper.CameraHelper
+import com.jushi.photo.compress.main.camera.utils.FlashMode
 import com.jushi.photo.compress.main.camera.view.CameraView
+import travel.camera.photo.compress.R
 import java.lang.reflect.Method
 import java.util.*
 
 class CameraPresenter(private val cameraView: CameraView, private val context: Context) {
+    private val screenWidth = (context as Activity).windowManager.defaultDisplay.width
+    private val screenHeight = (context as Activity).windowManager.defaultDisplay.height
     private var cameraHelper: CameraHelper = CameraHelper(context)
     private var camera: Camera? = null
     private lateinit var cameraParameters: Camera.Parameters
@@ -21,12 +26,39 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
     private val MIN_PREVIEW_PIXELS = 480 * 320 //最小预览界面的分辨率
     private var currentCameraId = 0
     private lateinit var holder: SurfaceHolder
+    private var curZoomValue = 0 //放大缩小
 
     /**
      * 改变闪光灯你状态
      */
     fun setFlashStatus() {
-
+        if (camera == null || camera!!.parameters == null || camera!!.parameters.supportedFlashModes == null) {
+            return
+        }
+        val parameters = camera!!.parameters
+        val flashMode = parameters.flashMode
+        val supportedFlashModes = parameters.supportedFlashModes
+        if (Camera.Parameters.FLASH_MODE_OFF == flashMode
+                && supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_ON)) { //当前为关闭状态
+            parameters.flashMode = Camera.Parameters.FLASH_MODE_ON
+            camera!!.parameters = parameters
+            cameraView.flashStatus(FlashMode.ON)
+        } else if (flashMode == Camera.Parameters.FLASH_MODE_ON) {  //当前为开启状态
+            if (supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_AUTO)) {
+                parameters.flashMode = Camera.Parameters.FLASH_MODE_AUTO
+                camera!!.parameters = parameters
+                cameraView.flashStatus(FlashMode.AUTO)
+            } else if (supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_OFF)) {
+                parameters.flashMode = Camera.Parameters.FLASH_MODE_OFF
+                camera!!.parameters = parameters
+                cameraView.flashStatus(FlashMode.OFF)
+            }
+        } else if (flashMode == Camera.Parameters.FLASH_MODE_AUTO &&
+                supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_OFF)) { //当前为自动状态
+            parameters.flashMode = Camera.Parameters.FLASH_MODE_OFF
+            camera!!.parameters = parameters
+            cameraView.flashStatus(FlashMode.OFF)
+        }
     }
 
     fun initCamera(holder: SurfaceHolder) {
@@ -107,7 +139,7 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
             } else 0
         })
         // 移除不符合条件的分辨率
-        val screenAspectRatio = (context as Activity).windowManager.defaultDisplay.width / context.windowManager.defaultDisplay.height
+        val screenAspectRatio = screenWidth / screenHeight
         val it = sortedSupportedPicResolutions.iterator()
         while (it.hasNext()) {
             val supportedPreviewResolution = it.next()
@@ -156,7 +188,7 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
                     .append(' ')
         }
         // 移除不符合条件的分辨率
-        val screenAspectRatio = (context as Activity).windowManager.defaultDisplay.width / context.windowManager.defaultDisplay.height
+        val screenAspectRatio = screenWidth / screenHeight
         val it = supportedPreviewResolutions.iterator()
         while (it.hasNext()) {
             val supportedPreviewResolution = it.next()
@@ -197,9 +229,13 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
         currentCameraId = (currentCameraId + 1) % cameraHelper.getNumberOfCameras()
         releaseCamera()
         camera = cameraHelper.openCamera(currentCameraId)
-        camera!!.setPreviewDisplay(holder)
-        initCamera()
-        camera!!.startPreview()
+        if (camera != null) {
+            camera!!.setPreviewDisplay(holder)
+            initCamera()
+            camera!!.startPreview()
+        } else { //切换摄像头失败
+            cameraView.showTus(context.getString(R.string.change_camera_hint))
+        }
     }
 
     /**
@@ -215,5 +251,75 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
         } catch (e: Exception) {
 
         }
+    }
+
+    /**
+     * 对焦 （自动对焦/点击手动对焦都调用次方法）
+     */
+    fun setFocus() {
+        object : Thread() {
+            override fun run() {
+                try {
+                    Thread.sleep(100)
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
+
+                if (camera == null) {
+                    return
+                }
+                camera!!.autoFocus(Camera.AutoFocusCallback { success, camera ->
+                    if (success) {
+                        initCamera()//实现相机的参数初始化
+                    }
+                })
+            }
+        }
+    }
+
+    fun addZoomIn(scale: Int) {
+        try {
+            val parameters = camera!!.parameters
+            if (!parameters.isZoomSupported) return
+            curZoomValue += scale
+            if (curZoomValue < 0) {
+                curZoomValue = 0
+            } else if (curZoomValue > parameters.maxZoom) {
+                curZoomValue = parameters.maxZoom
+            }
+            if (!parameters.isSmoothZoomSupported) {
+                parameters.zoom = curZoomValue
+                camera!!.parameters = parameters
+                return
+            } else {
+                camera!!.startSmoothZoom(curZoomValue)
+            }
+        } catch (e: Exception) {
+
+        }
+    }
+
+    fun pointFoucs(x: Int, y: Int) {
+        camera!!.cancelAutoFocus()
+        cameraParameters = camera!!.parameters
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            if (cameraParameters.maxNumMeteringAreas > 0) {
+                val areas = ArrayList<Camera.Area>()
+                //xy变换了
+                val rectY = -x * 2000 / screenWidth + 1000
+                val rectX = y * 2000 / screenHeight - 1000
+
+                val left = if (rectX < -900) -1000 else rectX - 100
+                val top = if (rectY < -900) -1000 else rectY - 100
+                val right = if (rectX > 900) 1000 else rectX + 100
+                val bottom = if (rectY > 900) 1000 else rectY + 100
+                val area1 = Rect(left, top, right, bottom)
+                areas.add(Camera.Area(area1, 800))
+                cameraParameters.setMeteringAreas(areas)
+            }
+            cameraParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
+        }
+        camera!!.parameters = cameraParameters
+        setFocus()
     }
 }

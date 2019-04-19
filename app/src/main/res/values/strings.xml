@@ -16,4 +16,5 @@
     <string name="second_compress">再次压缩</string>
     <string name="compress_loading">正在压缩...</string>
     <string name="saveing">正在保存...</string>
+    <string name="change_camera_hint">摄像头切换失败，请重试！</string>
 </resources>

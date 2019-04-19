@@ -1,24 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     android:orientation="vertical">
 
     <View
         android:id="@+id/camera_systemBar"
         android:layout_width="match_parent"
         android:layout_height="15dp"
-        android:background="@color/color_theme" />
+        android:background="@color/black" />
 
     <RelativeLayout
         android:id="@+id/rl_camera_title_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rl_camera_controller"
+        android:layout_below="@+id/camera_systemBar">
 
         <SurfaceView
             android:id="@+id/camera_SurfaceView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <!--聚焦框-->
+        <View
+            android:id="@+id/focus_index"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/bg_shape_focus_index"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/camera_flash_button"
@@ -26,8 +36,8 @@
             android:layout_height="35dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="8dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp"
             android:padding="5dp"
             android:src="@mipmap/camera_flash_off" />
 
@@ -37,10 +47,23 @@
             android:layout_height="35dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="8dp"
             android:layout_marginRight="15dp"
+            android:layout_marginTop="8dp"
             android:padding="5dp"
             android:src="@mipmap/camera_flip" />
     </RelativeLayout>
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rl_camera_controller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/Camera_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

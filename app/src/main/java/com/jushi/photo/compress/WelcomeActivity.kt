@@ -12,7 +12,7 @@ class WelcomeActivity : BaseActivity() {
 
     }
 
-    override fun setOnClickListener() {
+    override fun setOnViewListener() {
 
     }
 }

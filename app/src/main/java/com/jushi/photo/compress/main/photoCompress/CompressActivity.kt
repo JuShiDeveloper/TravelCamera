@@ -54,7 +54,7 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener {
         save_LottieAnimationView.addAnimatorListener(saveAnimationListener)
     }
 
-    override fun setOnClickListener() {
+    override fun setOnViewListener() {
         //返回按钮
         Back_Compress_Button.setOnClickListener { finish() }
         //选择图片按钮
