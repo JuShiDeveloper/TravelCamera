@@ -6,6 +6,7 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.hardware.Camera
 import android.os.Build
+import android.os.Bundle
 import android.view.SurfaceHolder
 import com.jushi.photo.compress.main.camera.helper.CameraHelper
 import com.jushi.photo.compress.main.camera.utils.FlashMode
@@ -14,7 +15,7 @@ import travel.camera.photo.compress.R
 import java.lang.reflect.Method
 import java.util.*
 
-class CameraPresenter(private val cameraView: CameraView, private val context: Context) {
+class CameraPresenter(private val cameraView: CameraView, private val context: Context) : Camera.PictureCallback {
     private val screenWidth = (context as Activity).windowManager.defaultDisplay.width
     private val screenHeight = (context as Activity).windowManager.defaultDisplay.height
     private var cameraHelper: CameraHelper = CameraHelper(context)
@@ -27,6 +28,7 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
     private var currentCameraId = 0
     private lateinit var holder: SurfaceHolder
     private var curZoomValue = 0 //放大缩小
+    private lateinit var bundle: Bundle
 
     /**
      * 改变闪光灯你状态
@@ -321,5 +323,17 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
         }
         camera!!.parameters = cameraParameters
         setFocus()
+    }
+
+    /**
+     * 获取拍摄的照片
+     */
+    fun takingPicture() {
+        camera!!.takePicture(null, null, this)
+    }
+
+    override fun onPictureTaken(data: ByteArray?, camera: Camera?) {
+        bundle = Bundle()
+        bundle.putByteArray("pictureArray", data)
     }
 }

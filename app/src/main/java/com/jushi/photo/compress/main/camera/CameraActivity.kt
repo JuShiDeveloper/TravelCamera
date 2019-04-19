@@ -2,7 +2,6 @@ package com.jushi.photo.compress.main.camera
 
 import android.content.ComponentCallbacks2
 import android.os.Handler
-import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.View
@@ -61,21 +60,30 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
             cameraPresenter.changeCamera()
         }
         camera_SurfaceView.setOnClickListener {
-            try {
-                cameraPresenter.pointFoucs(pointX.toInt(), pointY.toInt())
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            val params = RelativeLayout.LayoutParams(focus_index.layoutParams)
-            params.setMargins(pointX.toInt() - 60, pointY.toInt() - 60, 0, 0)
-            focus_index.layoutParams = params
-            focus_index.visibility = View.VISIBLE
-            val sa = ScaleAnimation(3f, 1f, 3f, 1f,
-                    ScaleAnimation.RELATIVE_TO_SELF, 0.5f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f)
-            sa.duration = 800
-            focus_index.startAnimation(sa)
-            handler.postDelayed({ focus_index.visibility = View.INVISIBLE }, 800)
+            surfaceViewClick()
         }
+        //拍照按钮
+        Taking_Picture_Button.setOnClickListener {
+            CameraGrid.visibility = View.INVISIBLE
+            cameraPresenter.takingPicture()
+        }
+    }
+
+    private fun surfaceViewClick() {
+        try {
+            cameraPresenter.pointFoucs(pointX.toInt(), pointY.toInt())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        val params = RelativeLayout.LayoutParams(focus_index.layoutParams)
+        params.setMargins(pointX.toInt() - 60, pointY.toInt() - 60, 0, 0)
+        focus_index.layoutParams = params
+        focus_index.visibility = View.VISIBLE
+        val sa = ScaleAnimation(3f, 1f, 3f, 1f,
+                ScaleAnimation.RELATIVE_TO_SELF, 0.5f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f)
+        sa.duration = 800
+        focus_index.startAnimation(sa)
+        handler.postDelayed({ focus_index.visibility = View.INVISIBLE }, 800)
     }
 
     private fun setOnTouchListener() {

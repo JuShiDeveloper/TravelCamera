@@ -22,6 +22,12 @@
             android:id="@+id/camera_SurfaceView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <com.jushi.photo.compress.main.camera.view.CameraGrid
+            android:id="@+id/CameraGrid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <!--聚焦框-->
         <View
             android:id="@+id/focus_index"
@@ -60,13 +66,14 @@
         android:layout_alignParentBottom="true"
         android:padding="5dp">
 
+        <!--拍照按钮-->
         <View
-            android:id="@+id/Camera_Button"
+            android:id="@+id/Taking_Picture_Button"
             android:layout_width="65dp"
             android:layout_height="65dp"
             android:layout_centerInParent="true"
-            android:clickable="true"
-            android:background="@drawable/bg_camera_button" />
+            android:background="@drawable/bg_camera_button"
+            android:clickable="true" />
 
     </RelativeLayout>
 
