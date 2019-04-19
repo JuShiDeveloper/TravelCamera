@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/ll_main_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@mipmap/bg_system_bar">
+
+        <View
+            android:id="@+id/systemBar_View"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="15dp">
+        <!--美化按钮-->
+        <RelativeLayout
+            android:id="@+id/MeiHuaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_shadow_button"
+            android:clickable="true"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@mipmap/bg_mei_hua_button"
+                android:clickable="false" />
+
+        </RelativeLayout>
+        <!--拼图按钮-->
+        <RelativeLayout
+            android:id="@+id/PinTuButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/MeiHuaButton"
+            android:background="@drawable/bg_shadow_button"
+            android:clickable="true"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@mipmap/bg_pin_tu_button"
+                android:clickable="false" />
+        </RelativeLayout>
+        <!--相机按钮-->
+        <RelativeLayout
+            android:id="@+id/CameraButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/MeiHuaButton"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_shadow_button"
+            android:clickable="true"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@mipmap/bg_camera_btn"
+                android:clickable="false" />
+
+        </RelativeLayout>
+        <!--图片压缩按钮-->
+        <RelativeLayout
+            android:id="@+id/PhotoCompressButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/MeiHuaButton"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@+id/CameraButton"
+            android:background="@drawable/bg_shadow_button"
+            android:clickable="true"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@mipmap/photo_compress"
+                android:clickable="false" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

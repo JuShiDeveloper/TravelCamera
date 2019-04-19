@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <View
+        android:id="@+id/activity_compress_systemBar_View"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/color_theme" />
+
+    <RelativeLayout
+        android:id="@+id/rl_compress_toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@+id/activity_compress_systemBar_View"
+        android:background="@color/color_theme">
+
+        <ImageView
+            android:id="@+id/Back_Compress_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_arrow_back_black_48dp" />
+
+        <TextView
+            android:id="@+id/tv_compress_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/Back_Compress_Button"
+            android:text="@string/photo_compress"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_picture_size_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/tv_compress_title"
+            android:text="@string/picture_size"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sp"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/tv_picture_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_picture_size_hint"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_18sp"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_compress_hint"
+        android:layout_below="@+id/rl_compress_toolBar">
+
+        <ImageView
+            android:id="@+id/iv_compress_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/tv_hint_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/user_hint"
+            android:textColor="@color/color_theme"
+            android:textSize="@dimen/_16sp" />
+
+        <com.jushi.library.lottie.LottieAnimationView
+            android:id="@+id/compress_LottieAnimationView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            app:lottie_autoPlay="false"
+            app:lottie_fileName="animation_1.json"
+            app:lottie_loop="false"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/tv_compress_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_theme"
+            android:textSize="@dimen/_20sp"
+            android:layout_below="@+id/compress_LottieAnimationView"
+            android:textStyle="bold"
+            android:text="@string/compress_loading"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_compress_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_compress_choice"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="6dp"
+        android:text="@string/compress_hint"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/_16sp"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:id="@+id/ll_compress_choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:clickable="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_choice_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_shadow_button"
+            android:clickable="true"
+            android:minWidth="80dp"
+            android:padding="8dp"
+            android:text="@string/choice_picture"
+            android:textColor="@color/color_theme"
+            android:textSize="@dimen/_16sp" />
+
+        <TextView
+            android:id="@+id/tv_compress_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/bg_shadow_button"
+            android:clickable="true"
+            android:enabled="false"
+            android:gravity="center"
+            android:minWidth="80dp"
+            android:padding="8dp"
+            android:text="@string/start_compress"
+            android:textColor="@color/_999999"
+            android:textSize="@dimen/_16sp" />
+
+        <TextView
+            android:id="@+id/tv_compress_save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/bg_shadow_button"
+            android:clickable="true"
+            android:enabled="false"
+            android:gravity="center"
+            android:minWidth="80dp"
+            android:padding="5dp"
+            android:text="@string/save"
+            android:textColor="@color/_999999"
+            android:textSize="@dimen/_18sp" />
+    </LinearLayout>
+
+</RelativeLayout>
