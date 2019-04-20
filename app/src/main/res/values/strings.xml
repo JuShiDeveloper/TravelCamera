@@ -18,4 +18,6 @@
     <string name="saveing">正在保存...</string>
     <string name="change_camera_hint">摄像头切换失败，请重试！</string>
     <string name="picture_success_save">拍照成功！</string>
+    <string name="chu_li_ing">正在处理中</string>
+    <string name="my_album">我的图库</string>
 </resources>

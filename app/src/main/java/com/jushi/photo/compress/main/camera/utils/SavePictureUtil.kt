@@ -4,8 +4,11 @@ import android.content.Context
 import android.graphics.*
 import android.hardware.Camera
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Environment
+import android.view.Gravity
 import com.jushi.library.takingPhoto.util.FileUtil
+import com.jushi.library.utils.ToastUtils
 import travel.camera.photo.compress.R
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -16,6 +19,11 @@ import java.io.InputStream
  */
 class SavePictureUtil(private val data: ByteArray, private val curCameraId: Int,
                       private val context: Context, private val listener: PictureSaveListener) : AsyncTask<Any, Any, String>() {
+
+    override fun onPreExecute() {
+        super.onPreExecute()
+        ToastUtils.showToastAtLocation(context, context.getString(R.string.chu_li_ing), Gravity.CENTER)
+    }
 
     override fun doInBackground(vararg params: Any?): String? {
         try {
@@ -71,8 +79,9 @@ class SavePictureUtil(private val data: ByteArray, private val curCameraId: Int,
         var matrix = Matrix()
         //将图片旋转90度
         matrix.setRotate(90f, (options.outWidth / 2).toFloat(), (options.outHeight / 2).toFloat())
-        if (curCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) { //前置摄像头
-            matrix.postScale(1f,-1f)
+        if (curCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            //前置摄像头如不单独设置则保存后的图片与拍照的方向相反
+            matrix.postScale(1f, -1f)
         }
         var rotateBitmap = Bitmap.createBitmap(bitmap, 0, 0, options.outWidth, options.outHeight, matrix, true)
         if (rotateBitmap != bitmap) {

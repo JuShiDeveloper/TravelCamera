@@ -236,7 +236,7 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
     }
 
     /**
-     * 焦点位置
+     * 点击对焦
      */
     fun pointFoucs(x: Int, y: Int) {
         camera!!.cancelAutoFocus()

@@ -30,6 +30,8 @@
         <activity android:name="com.jushi.photo.compress.main.pinTu.PinTuActivity" />
         <activity android:name="com.jushi.photo.compress.main.camera.CameraActivity"/>
         <activity android:name="com.jushi.photo.compress.main.photoCompress.CompressActivity" />
+        <activity android:name="com.jushi.photo.compress.main.camera.editPicture.EditPictureActivity"/>
+        <activity android:name="com.jushi.photo.compress.main.camera.album.AlbumActivity"/>
 
         <provider
             android:name="com.jushi.library.takingPhoto.util.ImageProvider"

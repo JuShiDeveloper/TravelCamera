@@ -3,7 +3,10 @@ package com.jushi.photo.compress.main.camera
 import android.app.Activity
 import android.content.ComponentCallbacks2
 import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.View
@@ -12,6 +15,9 @@ import android.widget.RelativeLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.jushi.library.base.BaseActivity
+import com.jushi.library.takingPhoto.PictureHelper
+import com.jushi.photo.compress.main.camera.album.AlbumActivity
+import com.jushi.photo.compress.main.camera.editPicture.EditPictureActivity
 import com.jushi.photo.compress.main.camera.presenter.CameraPresenter
 import com.jushi.photo.compress.main.camera.utils.FlashMode
 import com.jushi.photo.compress.main.camera.view.CameraView
@@ -69,6 +75,10 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
         //拍照按钮
         Taking_Picture_Button.setOnClickListener {
             cameraPresenter.takingPicture()
+        }
+        //拍照按钮右边的相册按钮
+        iv_curTakingImage.setOnClickListener {
+            startActivity(AlbumActivity::class.java)
         }
     }
 
@@ -179,7 +189,10 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
         Glide.with(this).load(imagePath)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(iv_curTakingImage)
-        showToast(getString(R.string.picture_success_save))
+        var uri = if (imagePath.startsWith("file:")) Uri.parse(imagePath) else Uri.parse("file://$imagePath")
+        val intent = Intent(this, EditPictureActivity::class.java)
+        intent.data = uri
+        startActivity(intent)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

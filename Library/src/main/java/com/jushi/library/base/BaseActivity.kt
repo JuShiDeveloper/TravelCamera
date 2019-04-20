@@ -105,23 +105,12 @@ abstract class BaseActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-     fun showToast(msg: String) {
-        ToastUtils.showToast(this, msg)
-    }
 
-    fun showToast(msg: Int) {
+    fun showToast(msg: Any) {
         ToastUtils.showToast(this, msg.toString())
     }
 
-    fun showToast(msg: Long) {
-        ToastUtils.showToast(this, msg.toString())
-    }
-
-    fun showToast(msg: Double) {
-        ToastUtils.showToast(this, msg.toString())
-    }
-
-    fun showToast(msg: Float) {
-        ToastUtils.showToast(this, msg.toString())
+    fun showToastAtLocation(msg: Any, gravity: Int) {
+        ToastUtils.showToastAtLocation(this, msg.toString(), gravity)
     }
 }
