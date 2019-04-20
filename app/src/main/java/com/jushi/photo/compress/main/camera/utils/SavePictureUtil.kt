@@ -29,7 +29,7 @@ class SavePictureUtil(private val data: ByteArray, private val curCameraId: Int,
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
         if (result != null) {
-            listener.pictureSaveSuccess()
+            listener.pictureSaveSuccess(result)
         }
     }
 
@@ -69,10 +69,10 @@ class SavePictureUtil(private val data: ByteArray, private val curCameraId: Int,
             }
         }
         var matrix = Matrix()
-        if (curCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) { //后置摄像头旋转270度
-            matrix.setRotate(270f, (options.outWidth / 2).toFloat(), (options.outHeight / 2).toFloat())
-        } else { //前置摄像头旋转90度
-            matrix.setRotate(90f, (options.outWidth / 2).toFloat(), (options.outHeight / 2).toFloat())
+        //将图片旋转90度
+        matrix.setRotate(90f, (options.outWidth / 2).toFloat(), (options.outHeight / 2).toFloat())
+        if (curCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) { //前置摄像头
+            matrix.postScale(1f,-1f)
         }
         var rotateBitmap = Bitmap.createBitmap(bitmap, 0, 0, options.outWidth, options.outHeight, matrix, true)
         if (rotateBitmap != bitmap) {
@@ -82,6 +82,6 @@ class SavePictureUtil(private val data: ByteArray, private val curCameraId: Int,
     }
 
     interface PictureSaveListener {
-        fun pictureSaveSuccess()
+        fun pictureSaveSuccess(imagePath: String)
     }
 }

@@ -272,7 +272,7 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
     /**
      * 重新开始预览
      */
-    fun startPreview() {
+    private fun startPreview() {
         if (camera == null) return
         camera!!.startPreview()
     }
@@ -282,21 +282,14 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
         this.data = data!!
         bundle = Bundle()
         bundle.putByteArray("pictureArray", data)
-        cameraView.isShowConfirmLayout(true)
-    }
-
-    /**
-     * 确认获取图片（点击确认（√）按钮时调用）
-     */
-    fun confirmTakePicture() {
         SavePictureUtil(data, currentCameraId, context, this).execute()
+        startPreview()
     }
 
     /**
      * 拍摄的图片保存成功
      */
-    override fun pictureSaveSuccess() {
-        cameraView.pictureSaveSuccess()
-        startPreview()
+    override fun pictureSaveSuccess(imagePath: String) {
+        cameraView.pictureSaveSuccess(imagePath)
     }
 }

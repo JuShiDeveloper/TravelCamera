@@ -77,36 +77,18 @@
             android:background="@drawable/bg_camera_button"
             android:clickable="true" />
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rl_confirm_picture"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_alignParentBottom="true"
-        android:padding="5dp"
-        android:visibility="invisible">
-
+        <!--显示当前拍摄的图片-->
         <ImageView
-            android:id="@+id/confirm_button"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:padding="5dp"
-            android:src="@mipmap/ok_btn_icon" />
-
-        <ImageView
-            android:id="@+id/cancel_picture_button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:id="@+id/iv_curTakingImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:padding="5dp"
-            android:src="@mipmap/cancel_btn_icon" />
+            android:layout_marginRight="15dp"
+            android:src="@mipmap/album_icon"
+            android:scaleType="centerCrop"/>
 
     </RelativeLayout>
+
 
 </RelativeLayout>
