@@ -31,7 +31,6 @@ class AlbumActivity : BaseActivity() {
         album_viewpager.adapter = ViewPagerAdapter(supportFragmentManager)
         album_selectTab.setViewPager(album_viewpager)
         album_selectTab.textSize = 16
-        album_selectTab.textColor = resources.getColor(R.color._333333)
         album_selectTab.selectedTextColor = resources.getColor(R.color.color_theme)
     }
 
