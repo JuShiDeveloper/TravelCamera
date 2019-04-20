@@ -1,6 +1,8 @@
 package com.jushi.photo.compress.main.camera
 
+import android.app.Activity
 import android.content.ComponentCallbacks2
+import android.content.Intent
 import android.os.Handler
 import android.view.MotionEvent
 import android.view.SurfaceHolder
@@ -64,7 +66,6 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
         }
         //拍照按钮
         Taking_Picture_Button.setOnClickListener {
-            CameraGrid.visibility = View.INVISIBLE
             cameraPresenter.takingPicture()
         }
         //取消（×）按钮
@@ -187,7 +188,6 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
         } else {
             rl_confirm_picture.visibility = View.INVISIBLE
             rl_camera_controller.visibility = View.VISIBLE
-            CameraGrid.visibility = View.VISIBLE
         }
     }
 
@@ -197,5 +197,12 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
     override fun pictureSaveSuccess() {
         showToast(getString(R.string.picture_success_save))
         isShowConfirmLayout(false)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+
+        }
     }
 }

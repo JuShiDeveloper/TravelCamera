@@ -7,7 +7,9 @@ import android.graphics.Rect
 import android.hardware.Camera
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.SurfaceHolder
+import com.jushi.library.systemBarUtils.SystemBarUtil
 import com.jushi.photo.compress.main.camera.helper.CameraHelper
 import com.jushi.photo.compress.main.camera.utils.FlashMode
 import com.jushi.photo.compress.main.camera.utils.SavePictureUtil
@@ -16,16 +18,21 @@ import travel.camera.photo.compress.R
 import java.lang.reflect.Method
 import java.util.*
 
+/**
+ * 拍照逻辑处理类
+ * @param width SurfaceView的宽
+ * @param height SurfaceView的高
+ */
 class CameraPresenter(private val cameraView: CameraView, private val context: Context) : Camera.PictureCallback, SavePictureUtil.PictureSaveListener {
     private val screenWidth = (context as Activity).windowManager.defaultDisplay.width
     private val screenHeight = (context as Activity).windowManager.defaultDisplay.height
     private var cameraHelper: CameraHelper = CameraHelper(context)
     private var camera: Camera? = null
     private lateinit var cameraParameters: Camera.Parameters
-    private lateinit var adapterSize: Camera.Size
-    private lateinit var previewSize: Camera.Size
-    private val MAX_ASPECT_DISTORTION = 0.15  //最大宽高比
-    private val MIN_PREVIEW_PIXELS = 480 * 320 //最小预览界面的分辨率
+    private lateinit var savePictureSize: Camera.Size  //保存大小的尺寸
+    private lateinit var previewSize: Camera.Size  //预览的尺寸
+    private var targetWidth = 4224 //图片保存的目标宽
+    private var targetHeight = 5632 //图片保存的目标高
     private var currentCameraId = 0
     private lateinit var holder: SurfaceHolder
     private var curZoomValue = 0 //放大缩小
@@ -78,15 +85,15 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
     private fun initCamera() {
         cameraParameters = camera!!.parameters
         cameraParameters.pictureFormat = PixelFormat.JPEG
-        adapterSize = findBestPictureResolution()
-        previewSize = findBestPreviewResolution()
-        if (adapterSize != null) {
-            cameraParameters.setPictureSize(adapterSize.width, adapterSize.height)
+        savePictureSize = getBastSize(targetWidth, targetHeight, cameraParameters.supportedPictureSizes)!!
+        previewSize = getBastSize(screenWidth, getPreviewTargetHeight(), cameraParameters.supportedPreviewSizes)!!
+        if (savePictureSize != null) {
+            cameraParameters.setPictureSize(savePictureSize.width, savePictureSize.height)
         }
         if (previewSize != null) {
             cameraParameters.setPreviewSize(previewSize.width, previewSize.height)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) { //对焦模式
             cameraParameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE//1连续对焦
         } else {
             cameraParameters.focusMode = Camera.Parameters.FOCUS_MODE_AUTO
@@ -99,6 +106,14 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
         }
         camera!!.startPreview()
         camera!!.cancelAutoFocus()// 2如果要实现连续的自动对焦，这一句必须加上
+    }
+
+    /**
+     * 获得预览的目标高度
+     * 屏幕的高度 - 状态栏的高 - 底部拍照按钮位置的高
+     */
+    private fun getPreviewTargetHeight(): Int {
+        return screenHeight - SystemBarUtil.getStatusBarHeight(context) - 150
     }
 
     /**
@@ -118,112 +133,30 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
     }
 
     /**
-     * 找出最适合的预览界面分辨率
-     *
-     * @return
+     * 获取最适合的尺寸
      */
-    private fun findBestPictureResolution(): Camera.Size {
-        val supportedPicResolutions = cameraParameters.supportedPictureSizes // 至少会返回一个值
-        val picResolutionSb = StringBuilder()
-        for (supportedPicResolution in supportedPicResolutions) {
-            picResolutionSb.append(supportedPicResolution.width).append('x')
-                    .append(supportedPicResolution.height).append(" ")
-        }
-        val defaultPictureResolution = cameraParameters.pictureSize
-        // 排序
-        val sortedSupportedPicResolutions = ArrayList(supportedPicResolutions)
-        Collections.sort<Camera.Size>(sortedSupportedPicResolutions, Comparator<Camera.Size> { a, b ->
-            val aPixels = a.height * a.width
-            val bPixels = b.height * b.width
-            if (bPixels < aPixels) {
-                return@Comparator -1
+    private fun getBastSize(targetWidth: Int, targetHeight: Int, sizeList: List<Camera.Size>): Camera.Size? {
+        var bastSize: Camera.Size? = null
+        //目标大小的宽高比
+        var targetRatio = (targetHeight.toDouble() / targetWidth)
+        var mindiff = targetRatio
+        for (size in sizeList) {
+            //系统支持的尺寸
+            var supportedRatio = (size.width.toDouble() / size.height)
+            Log.v("yufei", "系统支持的尺寸：${size.width} * ${size.height}  比例：$supportedRatio")
+            if (size.width == targetHeight && size.height == targetWidth) {
+                bastSize = size
+                break
             }
-            if (bPixels > aPixels) {
-                1
-            } else 0
-        })
-        // 移除不符合条件的分辨率
-        val screenAspectRatio = screenWidth / screenHeight
-        val it = sortedSupportedPicResolutions.iterator()
-        while (it.hasNext()) {
-            val supportedPreviewResolution = it.next()
-            val width = supportedPreviewResolution.width
-            val height = supportedPreviewResolution.height
-            // 在camera分辨率与屏幕分辨率宽高比不相等的情况下，找出差距最小的一组分辨率
-            // 由于camera的分辨率是width>height，我们设置的portrait模式中，width<height
-            // 因此这里要先交换然后在比较宽高比
-            val isCandidatePortrait = width > height
-            val maybeFlippedWidth = if (isCandidatePortrait) height else width
-            val maybeFlippedHeight = if (isCandidatePortrait) width else height
-            val aspectRatio = maybeFlippedWidth.toDouble() / maybeFlippedHeight.toDouble()
-            val distortion = Math.abs(aspectRatio - screenAspectRatio)
-            if (distortion > MAX_ASPECT_DISTORTION) {
-                it.remove()
-                continue
+            if (Math.abs(supportedRatio - targetRatio) < mindiff) {
+                mindiff = Math.abs(supportedRatio - targetRatio)
+                bastSize = size
             }
         }
-        // 如果没有找到合适的，并且还有候选的像素，对于照片，则取其中最大比例的，而不是选择与屏幕分辨率相同的
-        if (!sortedSupportedPicResolutions.isEmpty()) {
-            return sortedSupportedPicResolutions[0]
-        }
-        // 没有找到合适的，就返回默认的
-        return defaultPictureResolution
-    }
-
-    private fun findBestPreviewResolution(): Camera.Size {
-        val defaultPreviewResolution = cameraParameters.previewSize
-        val rawSupportedSizes = cameraParameters.supportedPreviewSizes
-                ?: return defaultPreviewResolution
-        // 按照分辨率从大到小排序
-        val supportedPreviewResolutions = ArrayList(rawSupportedSizes)
-        Collections.sort<Camera.Size>(supportedPreviewResolutions, Comparator<Camera.Size> { a, b ->
-            val aPixels = a.height * a.width
-            val bPixels = b.height * b.width
-            if (bPixels < aPixels) {
-                return@Comparator -1
-            }
-            if (bPixels > aPixels) {
-                1
-            } else 0
-        })
-        val previewResolutionSb = StringBuilder()
-        for (supportedPreviewResolution in supportedPreviewResolutions) {
-            previewResolutionSb.append(supportedPreviewResolution.width).append('x').append(supportedPreviewResolution.height)
-                    .append(' ')
-        }
-        // 移除不符合条件的分辨率
-        val screenAspectRatio = screenWidth / screenHeight
-        val it = supportedPreviewResolutions.iterator()
-        while (it.hasNext()) {
-            val supportedPreviewResolution = it.next()
-            val width = supportedPreviewResolution.width
-            val height = supportedPreviewResolution.height
-
-            // 移除低于下限的分辨率，尽可能取高分辨率
-            if (width * height < MIN_PREVIEW_PIXELS) {
-                it.remove()
-                continue
-            }
-            // 在camera分辨率与屏幕分辨率宽高比不相等的情况下，找出差距最小的一组分辨率
-            // 由于camera的分辨率是width>height，我们设置的portrait模式中，width<height
-            // 因此这里要先交换然preview宽高比后在比较
-            val isCandidatePortrait = width > height
-            val maybeFlippedWidth = if (isCandidatePortrait) height else width
-            val maybeFlippedHeight = if (isCandidatePortrait) width else height
-            val aspectRatio = maybeFlippedWidth.toDouble() / maybeFlippedHeight.toDouble()
-            val distortion = Math.abs(aspectRatio - screenAspectRatio)
-            if (distortion > MAX_ASPECT_DISTORTION) {
-                it.remove()
-                continue
-            }
-        }
-        // 如果没有找到合适的，并且还有候选的像素，则设置其中最大比例的，对于配置比较低的机器不太合适
-        if (!supportedPreviewResolutions.isEmpty()) {
-            val largestPreview = supportedPreviewResolutions[0]
-            return largestPreview
-        }
-        // 没有找到合适的，就返回默认的
-        return defaultPreviewResolution
+        Log.v("yufei", "目标尺寸：$targetWidth * $targetHeight  比例：$targetRatio")
+        Log.v("yufei", "最优尺寸：${bastSize?.width} * ${bastSize?.height}")
+        Log.v("yufei", "屏幕大小：$screenWidth * $screenHeight")
+        return bastSize
     }
 
     /**
