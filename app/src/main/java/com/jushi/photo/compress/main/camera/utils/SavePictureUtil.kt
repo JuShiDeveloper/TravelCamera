@@ -3,12 +3,15 @@ package com.jushi.photo.compress.main.camera.utils
 import android.content.Context
 import android.graphics.*
 import android.hardware.Camera
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Environment
+import android.support.v4.content.FileProvider
 import android.view.Gravity
-import com.jushi.library.takingPhoto.util.FileUtil
+import com.jushi.library.utils.FileUtil
 import com.jushi.library.utils.ToastUtils
+import travel.camera.photo.compress.BuildConfig
 import travel.camera.photo.compress.R
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -55,7 +58,7 @@ class SavePictureUtil(private val data: ByteArray, private val curCameraId: Int,
             e.printStackTrace()
         }
         var folder = Environment.getExternalStorageDirectory().path
-        val fileDir = File(folder + "/" + context.getString(R.string.app_name) + "/Pictures")
+        val fileDir = File(folder + "/" + context.getString(R.string.app_name))
         var imagePath = FileUtil.saveToFile(fileDir.path, true, cBitmap)
         cBitmap!!.recycle()
         return imagePath

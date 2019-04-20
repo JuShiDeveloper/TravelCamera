@@ -1,26 +1,38 @@
-package com.jushi.library.takingPhoto.util;
+package com.jushi.library.utils;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 /**
  * 文件工具类
  */
 public class FileUtil {
+    /**
+     * 系统相册的路径
+     *
+     * @return
+     */
+    public static String getSystemPhotoPath() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera";
+    }
 
     /**
      * 根据Uri返回文件绝对路径
@@ -95,7 +107,8 @@ public class FileUtil {
 
     /**
      * 保存图片文件
-     * @param fileFolderStr  文件地址
+     *
+     * @param fileFolderStr 文件地址
      * @param isDir
      * @param croppedImage
      * @return
@@ -123,5 +136,31 @@ public class FileUtil {
         croppedImage.compress(Bitmap.CompressFormat.JPEG, 70, outputStream);
         outputStream.close();
         return jpgFile.getPath();
+    }
+
+    /**
+     * 获取path路径下的图片
+     *
+     * @param path 存有图片的文件夹路径
+     * @return 存有该文件夹路径下图片的集合
+     */
+    public static ArrayList<String> findPicsInDir(String path) {
+        ArrayList<String> photos = new ArrayList<String>();
+        File dir = new File(path);
+        if (dir.exists() && dir.isDirectory()) {
+            for (File file : dir.listFiles(new FileFilter() {
+
+                @Override
+                public boolean accept(File pathname) {
+                    String filePath = pathname.getAbsolutePath();
+                    return (filePath.endsWith(".png") || filePath.endsWith(".jpg") || filePath
+                            .endsWith(".jepg"));
+                }
+            })) {
+                photos.add(file.getAbsolutePath());
+            }
+        }
+        Collections.sort(photos);
+        return photos;
     }
 }

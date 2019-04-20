@@ -4,7 +4,6 @@ import android.Manifest
 import android.animation.Animator
 import android.app.Activity
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -15,11 +14,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.jushi.library.base.BaseActivity
 import com.jushi.library.takingPhoto.PictureHelper
-import com.jushi.library.takingPhoto.util.FileUtil
+import com.jushi.library.utils.FileUtil
 import com.jushi.library.takingPhoto.util.PermissionUtil
+import com.jushi.photo.compress.main.camera.utils.ImageUtil
 import kotlinx.android.synthetic.main.activity_compress_layout.*
 import travel.camera.photo.compress.R
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * 图片压缩界面
@@ -133,12 +135,12 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener {
      * 播放动画
      */
     private fun playAnimation(type: String) {
-        when(type){
-            COMPRESS ->{
+        when (type) {
+            COMPRESS -> {
                 compress_LottieAnimationView.visibility = View.VISIBLE
                 compress_LottieAnimationView.playAnimation()
             }
-            SAVE ->{
+            SAVE -> {
                 save_LottieAnimationView.visibility = View.VISIBLE
                 save_LottieAnimationView.playAnimation()
                 tv_compress_hint.text = getString(R.string.saveing)
@@ -151,12 +153,12 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener {
      * 停止动画
      */
     private fun stopAnimation(type: String) {
-        when(type){
-            COMPRESS ->{
+        when (type) {
+            COMPRESS -> {
                 compress_LottieAnimationView.visibility = View.INVISIBLE
                 compress_LottieAnimationView.pauseAnimation()
             }
-            SAVE ->{
+            SAVE -> {
                 save_LottieAnimationView.visibility = View.INVISIBLE
                 save_LottieAnimationView.pauseAnimation()
                 tv_compress_save_button.isEnabled = true
@@ -214,6 +216,7 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener {
     private fun showSaveSuccess(isSuccess: Boolean) {
         if (isSuccess) {
             tv_compress_hint.text = getString(R.string.save_hint)
+            ImageUtil.notifySystemScanImage(this, savePath.path)
         }
         isSave = isSuccess
     }
@@ -261,10 +264,15 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener {
     private inner class SaveAnimationListener : Animator.AnimatorListener {
         override fun onAnimationStart(animation: Animator?) {
             val rootPath = Environment.getExternalStorageDirectory().path
-            val fileDir = File(rootPath + "/" + getString(R.string.app_name)+"/压缩图片")
+            val fileDir = File(rootPath + "/" + getString(R.string.app_name))
             if (!fileDir.exists()) fileDir.mkdirs()
-            savePath = File(fileDir.path, "${System.currentTimeMillis()}.jpg")
-            if (!savePath.exists()) savePath.createNewFile()
+            val date = Date()
+            val format = SimpleDateFormat("yyyyMMddHHmmss") // 格式化时间
+            val filename = "压缩${format.format(date)}.jpg"
+            savePath = File(fileDir.path, filename)
+            if (!savePath.exists()) {
+                savePath.createNewFile()
+            }
         }
 
         override fun onAnimationCancel(animation: Animator?) {

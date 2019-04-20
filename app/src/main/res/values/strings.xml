@@ -10,7 +10,7 @@
     <string name="no_choice_picture">未选择任何图片</string>
     <string name="picture_size">图片大小：</string>
     <string name="save">保存</string>
-    <string name="save_hint">保存成功，请前往‘旅拍/压缩图片’文件夹查看！</string>
+    <string name="save_hint">保存成功，请前往‘旅拍’文件夹查看！</string>
     <string name="picture_save_success">图片已保存，请前往文件夹查看！</string>
     <string name="user_hint">欢迎使用旅拍应用图片压缩功能\n\n点击保存后的图片存放在（旅拍）文件夹中\n\n保存后可前往文件管理查看！</string>
     <string name="second_compress">再次压缩</string>

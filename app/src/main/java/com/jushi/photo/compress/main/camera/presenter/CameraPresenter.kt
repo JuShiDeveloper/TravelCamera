@@ -1,20 +1,26 @@
 package com.jushi.photo.compress.main.camera.presenter
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.hardware.Camera
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.SurfaceHolder
 import com.jushi.library.systemBarUtils.SystemBarUtil
 import com.jushi.photo.compress.main.camera.helper.CameraHelper
 import com.jushi.photo.compress.main.camera.utils.FlashMode
+import com.jushi.photo.compress.main.camera.utils.ImageUtil
 import com.jushi.photo.compress.main.camera.utils.SavePictureUtil
 import com.jushi.photo.compress.main.camera.view.CameraView
 import travel.camera.photo.compress.R
+import java.io.File
 import java.lang.reflect.Method
 import java.util.*
 
@@ -291,5 +297,6 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
      */
     override fun pictureSaveSuccess(imagePath: String) {
         cameraView.pictureSaveSuccess(imagePath)
+        ImageUtil.notifySystemScanImage(context,imagePath)
     }
 }

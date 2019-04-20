@@ -24,7 +24,7 @@ import com.jushi.library.R;
 
 import java.io.IOException;
 
-import static com.jushi.library.takingPhoto.util.FileUtil.getRealFilePathFromUri;
+import static com.jushi.library.utils.FileUtil.getRealFilePathFromUri;
 
 
 /**
