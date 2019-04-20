@@ -2,6 +2,7 @@ package com.jushi.photo.compress.main.camera.utils
 
 import android.content.Context
 import android.graphics.*
+import android.hardware.Camera
 import android.os.AsyncTask
 import android.os.Environment
 import com.jushi.library.takingPhoto.util.FileUtil
@@ -10,10 +11,11 @@ import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
 
+/**
+ * 保存拍摄的照片
+ */
 class SavePictureUtil(private val data: ByteArray, private val curCameraId: Int,
                       private val context: Context, private val listener: PictureSaveListener) : AsyncTask<Any, Any, String>() {
-
-    private var photoSize = 2000
 
     override fun doInBackground(vararg params: Any?): String? {
         try {
@@ -37,16 +39,10 @@ class SavePictureUtil(private val data: ByteArray, private val curCameraId: Int,
         var options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
         BitmapFactory.decodeByteArray(data, 0, data.size, options)
-        photoSize = if (options.outHeight > options.outWidth) options.outWidth else options.outHeight
-        var height = if (options.outHeight > options.outWidth) options.outHeight else options.outWidth
         options.inJustDecodeBounds = false
-        var rect = if (curCameraId == 1) {
-            Rect(height - photoSize, 0, height, photoSize)
-        } else {
-            Rect(0, 0, photoSize, photoSize)
-        }
+        var rect = Rect(0, 0, options.outWidth, options.outHeight)
         try {
-            cBitmap = decodeRegionCrop(rect)
+            cBitmap = decodeRegionCrop(rect, options)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -57,7 +53,7 @@ class SavePictureUtil(private val data: ByteArray, private val curCameraId: Int,
         return imagePath
     }
 
-    private fun decodeRegionCrop(rect: Rect): Bitmap {
+    private fun decodeRegionCrop(rect: Rect, options: BitmapFactory.Options): Bitmap {
         var inputStream: InputStream? = null
         System.gc()
         var bitmap: Bitmap? = null
@@ -73,11 +69,12 @@ class SavePictureUtil(private val data: ByteArray, private val curCameraId: Int,
             }
         }
         var matrix = Matrix()
-        matrix.setRotate(90f, (photoSize / 2).toFloat(), (photoSize / 2).toFloat())
-        if (curCameraId == 1) {
-            matrix.postScale(1f, -1f)
+        if (curCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) { //后置摄像头旋转270度
+            matrix.setRotate(270f, (options.outWidth / 2).toFloat(), (options.outHeight / 2).toFloat())
+        } else { //前置摄像头旋转90度
+            matrix.setRotate(90f, (options.outWidth / 2).toFloat(), (options.outHeight / 2).toFloat())
         }
-        var rotateBitmap = Bitmap.createBitmap(bitmap, 0, 0, photoSize, photoSize, matrix, true)
+        var rotateBitmap = Bitmap.createBitmap(bitmap, 0, 0, options.outWidth, options.outHeight, matrix, true)
         if (rotateBitmap != bitmap) {
             bitmap!!.recycle()
         }

@@ -143,7 +143,6 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
         for (size in sizeList) {
             //系统支持的尺寸
             var supportedRatio = (size.width.toDouble() / size.height)
-            Log.v("yufei", "系统支持的尺寸：${size.width} * ${size.height}  比例：$supportedRatio")
             if (size.width == targetHeight && size.height == targetWidth) {
                 bastSize = size
                 break
@@ -153,9 +152,6 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
                 bastSize = size
             }
         }
-        Log.v("yufei", "目标尺寸：$targetWidth * $targetHeight  比例：$targetRatio")
-        Log.v("yufei", "最优尺寸：${bastSize?.width} * ${bastSize?.height}")
-        Log.v("yufei", "屏幕大小：$screenWidth * $screenHeight")
         return bastSize
     }
 
@@ -214,6 +210,9 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
         }
     }
 
+    /**
+     * 缩放
+     */
     fun addZoomIn(scale: Int) {
         try {
             val parameters = camera!!.parameters
@@ -236,6 +235,9 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
         }
     }
 
+    /**
+     * 焦点位置
+     */
     fun pointFoucs(x: Int, y: Int) {
         camera!!.cancelAutoFocus()
         cameraParameters = camera!!.parameters
@@ -252,9 +254,9 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
                 val bottom = if (rectY > 900) 1000 else rectY + 100
                 val area1 = Rect(left, top, right, bottom)
                 areas.add(Camera.Area(area1, 800))
-                cameraParameters.setMeteringAreas(areas)
+                cameraParameters.meteringAreas = areas
             }
-            cameraParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
+            cameraParameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
         }
         camera!!.parameters = cameraParameters
         setFocus()
