@@ -37,7 +37,7 @@
 
     </RelativeLayout>
 
-    <com.jushi.library.customView.PagerSlidingTabStrip
+    <com.jushi.library.customView.slideTabStrip.PagerSlidingTabStrip
         android:id="@+id/album_selectTab"
         android:layout_width="fill_parent"
         android:layout_height="48dp"

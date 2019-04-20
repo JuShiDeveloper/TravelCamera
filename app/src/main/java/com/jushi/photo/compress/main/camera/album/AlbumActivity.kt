@@ -3,6 +3,7 @@ package com.jushi.photo.compress.main.camera.album
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.view.ViewPager
 import android.util.Log
 import com.jushi.library.base.BaseActivity
 import com.jushi.photo.compress.main.camera.entity.AlbumEntity
@@ -29,7 +30,9 @@ class AlbumActivity : BaseActivity() {
         setSystemBarViewLayoutParamsR(systemBar_album_activity)
         album_viewpager.adapter = ViewPagerAdapter(supportFragmentManager)
         album_selectTab.setViewPager(album_viewpager)
-        album_selectTab.textSize = 40
+        album_selectTab.textSize = 16
+        album_selectTab.textColor = resources.getColor(R.color._333333)
+        album_selectTab.selectedTextColor = resources.getColor(R.color.color_theme)
     }
 
     override fun setOnViewListener() {
