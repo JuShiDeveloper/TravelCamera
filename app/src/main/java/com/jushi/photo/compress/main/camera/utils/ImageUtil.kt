@@ -60,7 +60,7 @@ object ImageUtil {
      */
     fun notifySystemScanImage(context: Context, imagePath: String) {
         val values = ContentValues()
-        values.put(MediaStore.Images.Media.DATA, File(imagePath).absolutePath)
+        values.put(MediaStore.Images.Media.DATA, imagePath)
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
         var uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri))

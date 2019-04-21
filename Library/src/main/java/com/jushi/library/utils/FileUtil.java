@@ -1,13 +1,19 @@
 package com.jushi.library.utils;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
+
+import com.jushi.library.base.BaseApplication;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -19,6 +25,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 /**
@@ -98,11 +105,32 @@ public class FileUtil {
                 }
                 inStream.close();
                 isSuccess = true;
+                notifySystemScanImage(newPath);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return isSuccess;
+    }
+
+    /**
+     * 通知系统检索刚刚保存的图片
+     */
+    public static void notifySystemScanImage(String imagePath) {
+//        ContentValues values = new ContentValues();
+//        values.put(MediaStore.Images.Media.DATA, imagePath);
+//        values.put(MediaStore.Images.Media.CONTENT_TYPE, "image/jpeg");
+//        Uri uri = BaseApplication.context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//        BaseApplication.context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+        MediaScannerConnection.scanFile(BaseApplication.context,
+                new String[]{new File(imagePath).getAbsolutePath()},
+                new String[]{"image/jpeg"}, new MediaScannerConnection.OnScanCompletedListener() {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.v("yufei", "onScanCompleted：path = " + path);
+                        Log.v("yufei", "onScanCompleted：uri = " + uri);
+                    }
+                });
     }
 
     /**
@@ -160,7 +188,14 @@ public class FileUtil {
                 photos.add(file.getAbsolutePath());
             }
         }
-        Collections.sort(photos);
+//        Collections.sort(photos); //升序排序
+        //降序排序
+        Collections.sort(photos, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o2.compareTo(o1);
+            }
+        });
         return photos;
     }
 }

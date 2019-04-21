@@ -216,7 +216,6 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener {
     private fun showSaveSuccess(isSuccess: Boolean) {
         if (isSuccess) {
             tv_compress_hint.text = getString(R.string.save_hint)
-            ImageUtil.notifySystemScanImage(this, savePath.path)
         }
         isSave = isSuccess
     }

@@ -1,5 +1,6 @@
 package com.muslim.pro.imuslim.azan.portion.common.base
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -70,4 +71,23 @@ abstract class ViewPagerFragment : Fragment() {
      */
     abstract fun onFragmentVisibleChange(isVisible: Boolean)
 
+    /**
+     * 不带值跳转
+     * @param cls 目标 Activity
+     */
+    fun startActivity(cls: Class<*>) {
+        val intent = Intent(context, cls)
+        context?.startActivity(intent)
+    }
+
+    /**
+     * 带值跳转
+     * @param bundle 携带的参数
+     * @param cls 目标 Activity
+     */
+    fun startActivity(bundle: Bundle, cls: Class<*>) {
+        val intent = Intent(context, cls)
+        intent.putExtra(cls.name, bundle)
+        context?.startActivity(intent)
+    }
 }

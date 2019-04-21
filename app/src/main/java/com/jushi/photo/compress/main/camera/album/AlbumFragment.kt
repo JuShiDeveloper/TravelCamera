@@ -16,10 +16,14 @@ import com.muslim.pro.imuslim.azan.portion.common.base.ViewPagerFragment
 import kotlinx.android.synthetic.main.fragment_album_layout.*
 import travel.camera.photo.compress.R
 
+/**
+ * 以列表形式显示文件夹中图片
+ */
 class AlbumFragment : ViewPagerFragment(), View.OnClickListener {
 
     private lateinit var photos: ArrayList<String>
     private lateinit var adapter: PhotoAdapter
+    private var TAG_KEY = R.id.iv_album_item
 
     companion object {
         private val DATA_KEY = "photos"
@@ -39,10 +43,10 @@ class AlbumFragment : ViewPagerFragment(), View.OnClickListener {
 
     override fun initWidget() {
         album_fragment_recyclerVeiw.layoutManager = GridLayoutManager(context, 4)
-        album_fragment_recyclerVeiw.addItemDecoration(object :RecyclerView.ItemDecoration(){
+        album_fragment_recyclerVeiw.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, itemPosition: Int, parent: RecyclerView) {
                 super.getItemOffsets(outRect, itemPosition, parent)
-                outRect.set(10,10,10,10)
+                outRect.set(10, 10, 10, 10)
             }
         })
     }
@@ -61,7 +65,11 @@ class AlbumFragment : ViewPagerFragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         val imagePath = v?.tag as String
-        Log.v("yufei", "imagePath = $imagePath")
+        var position = v?.getTag(TAG_KEY) as Int
+        val bundle = Bundle()
+        bundle.putInt(PictureActivity.PICTURE_INDEX_KEY, position)
+        bundle.putStringArrayList(PictureActivity.PHOTOS, photos)
+        startActivity(bundle, PictureActivity::class.java)
     }
 
     inner class PhotoAdapter(private val context: Context) : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
@@ -80,6 +88,7 @@ class AlbumFragment : ViewPagerFragment(), View.OnClickListener {
             if (listener != null) {
                 holder.itemView.setOnClickListener {
                     holder.itemView.tag = photos[position]
+                    holder.itemView.setTag(TAG_KEY, position)
                     listener?.onClick(holder.itemView)
                 }
             }

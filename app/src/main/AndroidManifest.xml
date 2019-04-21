@@ -32,6 +32,7 @@
         <activity android:name="com.jushi.photo.compress.main.photoCompress.CompressActivity" />
         <activity android:name="com.jushi.photo.compress.main.camera.editPicture.EditPictureActivity"/>
         <activity android:name="com.jushi.photo.compress.main.camera.album.AlbumActivity"/>
+        <activity android:name="com.jushi.photo.compress.main.camera.album.PictureActivity"/>
 
         <provider
             android:name="com.jushi.library.takingPhoto.util.ImageProvider"
