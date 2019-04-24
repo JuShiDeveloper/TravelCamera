@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -18,7 +19,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.jushi.photo.compress.WelcomeActivity" />
+        <activity android:name="com.jushi.photo.compress.WelcomeActivity" >
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
         <activity android:name="com.jushi.photo.compress.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,11 +35,10 @@
         </activity>
         <activity android:name="com.jushi.photo.compress.main.meiHua.MeiHuaActivity" />
         <activity android:name="com.jushi.photo.compress.main.pinTu.PinTuActivity" />
-        <activity android:name="com.jushi.photo.compress.main.camera.CameraActivity"/>
+        <activity android:name="com.jushi.photo.compress.main.camera.CameraActivity" />
         <activity android:name="com.jushi.photo.compress.main.photoCompress.CompressActivity" />
-        <activity android:name="com.jushi.photo.compress.main.camera.editPicture.EditPictureActivity"/>
-        <activity android:name="com.jushi.photo.compress.main.camera.album.AlbumActivity"/>
-        <activity android:name="com.jushi.photo.compress.main.camera.album.PictureActivity"/>
+        <activity android:name="com.jushi.photo.compress.main.camera.editPicture.EditPictureActivity" />
+        <activity android:name="com.jushi.photo.compress.main.camera.album.AlbumActivity" />
 
         <provider
             android:name="com.jushi.library.takingPhoto.util.ImageProvider"

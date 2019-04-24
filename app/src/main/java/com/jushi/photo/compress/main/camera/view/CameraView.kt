@@ -11,4 +11,5 @@ interface CameraView {
 
     //拍摄的照片保存成功
     fun pictureSaveSuccess(imagePath: String)
+
 }

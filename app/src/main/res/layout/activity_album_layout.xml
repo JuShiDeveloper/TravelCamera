@@ -44,9 +44,10 @@
         app:pstsIndicatorColor="@color/color_theme"
         app:pstsIndicatorHeight="2dp" />
 
-    <android.support.v4.view.ViewPager
+    <com.jushi.photo.compress.main.camera.view.ScrollableViewPager
         android:id="@+id/album_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:focusable="true"/>
 
 </LinearLayout>
