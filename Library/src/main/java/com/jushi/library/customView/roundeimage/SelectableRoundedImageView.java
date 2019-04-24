@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.jushi.library.customView;
+package com.jushi.library.customView.roundeimage;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -36,8 +36,8 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.jushi.library.R;
-import com.jushi.library.customView.roundeimage.Corner;
-import com.jushi.library.customView.roundeimage.RoundedDrawable;
+import com.jushi.library.customView.roundeimage.tools.Corner;
+import com.jushi.library.customView.roundeimage.tools.RoundedDrawable;
 
 
 @SuppressLint("AppCompatCustomView")

@@ -1,4 +1,4 @@
-package com.jushi.photo.compress.main.camera.view
+package com.jushi.library.customView.scaleImageView
 
 import android.content.Context
 import android.graphics.Matrix
@@ -8,8 +8,17 @@ import android.support.v4.view.ViewPager
 import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
 import android.view.*
-import kotlin.math.max
 
+/**
+ * @author jushi
+ *
+ * careate time：2019/04/24
+ *
+ * 功能：
+ * 1、手势缩放图片
+ * 2、放大后单指触摸拖动图片
+ * 3、双击放大缩小
+ */
 class ScaleImageView : AppCompatImageView, ScaleGestureDetector.OnScaleGestureListener,
         View.OnTouchListener, ViewTreeObserver.OnGlobalLayoutListener {
     /**--------手指控制图片缩放的变量------------**/
@@ -37,10 +46,11 @@ class ScaleImageView : AppCompatImageView, ScaleGestureDetector.OnScaleGestureLi
     /**-----------双击放大缩小的变量----------------------------**/
     private lateinit var mGestureDetector: GestureDetector
     private var isAutoScale = false
+    private var clickListener: View.OnClickListener? = null
 
     init {
         mScaleMatrix = Matrix()
-        scaleType = ScaleType.MATRIX
+        scaleType = ScaleType.FIT_CENTER
         mScaleGestureDetector = ScaleGestureDetector(context, this)
         setOnTouchListener(this)
         touchSlop = ViewConfiguration.get(context).scaledTouchSlop
@@ -48,9 +58,35 @@ class ScaleImageView : AppCompatImageView, ScaleGestureDetector.OnScaleGestureLi
     }
 
     constructor(context: Context?) : super(context)
-
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    /**
+     * 如果在同一个页面使用同一个ScaleImageView显示不同的图片，
+     * 则在设置图片之前须先调用此方法
+     */
+    fun reset() {
+        mScaleMatrix = Matrix()
+        scaleType = ScaleType.FIT_CENTER
+        mScaleGestureDetector = ScaleGestureDetector(context, this)
+        setOnTouchListener(this)
+        touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+        mGestureDetector = GestureDetector(context, GestureListener())
+        initScale = 0.0f
+        maxScale = 0.0f
+        touchSlop = 0
+        lastPointCount = 0
+        mOnce = false
+        isAutoScale = false
+        isCanDrag = false
+        isCheckLeftAndRight = false
+        isCheckTopAndBottom = false
+    }
+
+    override fun setOnClickListener(l: OnClickListener) {
+        super.setOnClickListener(l)
+        this.clickListener = l
+    }
 
     /**
      * 获取ImageView控件加载完成的图片
@@ -80,7 +116,7 @@ class ScaleImageView : AppCompatImageView, ScaleGestureDetector.OnScaleGestureLi
         var dy = height / 2 - drawableHeight / 2
         mScaleMatrix.postTranslate(dx.toFloat(), dy.toFloat())
         mScaleMatrix.postScale(initScale, initScale, (width / 2).toFloat(), (height / 2).toFloat())
-//        scaleType = ScaleType.MATRIX
+        scaleType = ScaleType.MATRIX
         imageMatrix = mScaleMatrix
         mOnce = true
     }
@@ -138,7 +174,7 @@ class ScaleImageView : AppCompatImageView, ScaleGestureDetector.OnScaleGestureLi
         }
         x /= pointCount
         y /= pointCount
-        if(lastPointCount != pointCount){
+        if (lastPointCount != pointCount) {
             isCanDrag = false
             lastX = x
             lastY = y
@@ -223,7 +259,6 @@ class ScaleImageView : AppCompatImageView, ScaleGestureDetector.OnScaleGestureLi
         mScaleMatrix.postTranslate(dx, dy)
     }
 
-
     inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
         override fun onDoubleTap(e: MotionEvent): Boolean {
             if (isAutoScale) {
@@ -239,6 +274,11 @@ class ScaleImageView : AppCompatImageView, ScaleGestureDetector.OnScaleGestureLi
                 postDelayed(AutoScaleRunnable(initScale, x, y), 16)
                 true
             }
+            return true
+        }
+
+        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            clickListener?.onClick(this@ScaleImageView)
             return true
         }
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jushi.library.customView.roundeimage;
+package com.jushi.library.customView.roundeimage.tools;
 
 import android.support.annotation.IntDef;
 

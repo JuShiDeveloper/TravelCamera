@@ -20,6 +20,7 @@ abstract class BaseActivity : AppCompatActivity() {
         setPageLayout()
         initData()
         initWidget()
+        initAnimator()
         setOnViewListener()
     }
 
@@ -77,6 +78,13 @@ abstract class BaseActivity : AppCompatActivity() {
      * 初始化组建（根据需要选择是否重写）
      */
     open fun initWidget() {
+
+    }
+
+    /**
+     * 初始化动画
+     */
+    open fun initAnimator(){
 
     }
 

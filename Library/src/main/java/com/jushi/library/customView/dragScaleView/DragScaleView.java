@@ -1,4 +1,4 @@
-package com.jushi.photo.compress.main.camera.view;
+package com.jushi.library.customView.dragScaleView;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,9 +15,13 @@ import android.view.ViewGroup;
 
 
 /**
- * 显示艺术体，可拖动/缩放的view
+ * changed by jushi
  *
- * @author wyf
+ * 功能：
+ * 1、双指缩放图片
+ * 2、单指触摸中心位置可拖动控件到父控件的任意位置
+ * 3、单指点击left top right bottom 四个角并拖动可缩放图片
+ *
  */
 public class DragScaleView extends AppCompatImageView implements View.OnTouchListener {
     protected int screenWidth;
@@ -90,7 +94,7 @@ public class DragScaleView extends AppCompatImageView implements View.OnTouchLis
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         int action = event.getAction() & MotionEvent.ACTION_MASK;
-//        setBackgroundResource(R.drawable.bg_dashgap);
+//        setBackgroundResource(R.drawable.bg_dashgap); //设置描边
         if (action == MotionEvent.ACTION_DOWN) {
             oriLeft = v.getLeft();
             oriRight = v.getRight();

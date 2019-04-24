@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jushi.library.customView.roundeimage;
+package com.jushi.library.customView.roundeimage.tools;
 
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;

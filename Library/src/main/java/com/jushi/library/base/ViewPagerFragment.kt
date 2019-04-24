@@ -52,6 +52,7 @@ abstract class ViewPagerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initWidget()
+        setViewListener()
         if (!hasCreateView && userVisibleHint) {
             onFragmentVisibleChange(true)
             isFragmentVisible = true
@@ -64,6 +65,11 @@ abstract class ViewPagerFragment : Fragment() {
     abstract fun initRootView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
 
     abstract fun initWidget()
+
+    /**
+     * 设置View的监听事件
+     */
+    abstract fun setViewListener()
 
     /**
      * 子类重写此方法，在该方法中请求数据
