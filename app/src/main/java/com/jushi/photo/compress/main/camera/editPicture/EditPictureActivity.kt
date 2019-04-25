@@ -22,6 +22,8 @@ class EditPictureActivity : BaseActivity() {
     private lateinit var lableView: LableView
     private val lableList = arrayListOf<LableView>()
     private lateinit var lableSelector: LableSelector
+    private val MOOD_REQUEST_CODE = 0x001
+    private val LOCATION_REQUEST_CODE = 0x002
 
     override fun setPageLayout() {
         setContentView(R.layout.activity_edit_picture_layout, true, true)
@@ -104,10 +106,10 @@ class EditPictureActivity : BaseActivity() {
         override fun onClick(v: View) {
             when (v.tag as LableSelector.LableType) {
                 LableSelector.LableType.MOOD -> { //点击心情
-
+                    startActivityForResult(InputLableContentActivity::class.java, MOOD_REQUEST_CODE)
                 }
                 LableSelector.LableType.LOCATION -> {  //点击地点
-
+                    startActivityForResult(InputLableContentActivity::class.java, LOCATION_REQUEST_CODE)
                 }
             }
         }

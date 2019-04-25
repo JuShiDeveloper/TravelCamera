@@ -25,4 +25,6 @@
     <string name="tie_zhi">贴纸</string>
     <string name="lv_jing">滤镜</string>
     <string name="biao_qian">标签</string>
+    <string name="cancel">取消</string>
+    <string name="please_input_content">输入内容</string>
 </resources>

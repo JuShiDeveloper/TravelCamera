@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/input_lable_content_system_bar"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/color_theme" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/color_theme">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/please_input_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sp" />
+
+        <TextView
+            android:id="@+id/tv_input_lable_content_calcelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/bg_button_selected_round_rectangle"
+            android:padding="5dp"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sp" />
+
+        <TextView
+            android:id="@+id/tv_input_lable_content_saveBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/bg_button_selected_round_rectangle"
+            android:padding="5dp"
+            android:text="@string/save"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sp" />
+    </RelativeLayout>
+</LinearLayout>

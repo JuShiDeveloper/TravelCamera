@@ -84,7 +84,7 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * 初始化动画
      */
-    open fun initAnimator(){
+    open fun initAnimator() {
 
     }
 
@@ -113,6 +113,22 @@ abstract class BaseActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    /**
+     *不携带参数的带返回值跳转
+     */
+    fun startActivityForResult(cls: Class<*>, requestCode: Int) {
+        var intent = Intent(this, cls)
+        startActivityForResult(intent, requestCode)
+    }
+
+    /**
+     *携带参数的带返回值跳转
+     */
+    fun startActivityForResult(cls: Class<*>, bundle: Bundle, requestCode: Int) {
+        var intent = Intent(this, cls)
+        intent.putExtra(cls.name, bundle)
+        startActivityForResult(intent, requestCode)
+    }
 
     fun showToast(msg: Any) {
         ToastUtils.showToast(this, msg.toString())
