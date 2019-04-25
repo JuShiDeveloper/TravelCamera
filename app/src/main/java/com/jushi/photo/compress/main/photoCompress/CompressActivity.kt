@@ -8,8 +8,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.view.View
-import com.base.muslim.compression.PictureCompression
-import com.base.muslim.compression.minterface.OnPictureCompressionListener
+import com.jushi.library.compression.PictureCompression
+import com.jushi.library.compression.minterface.OnPictureCompressionListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.jushi.library.base.BaseActivity

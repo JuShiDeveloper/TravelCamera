@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_lable_view_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.9"
+        android:background="@drawable/icon_biaoqian_i"
+        android:padding="3dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_13sp"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/dot_lable_view"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:src="@mipmap/dot" />
+
+</LinearLayout>

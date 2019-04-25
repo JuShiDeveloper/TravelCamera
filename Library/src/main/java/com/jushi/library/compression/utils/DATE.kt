@@ -1,4 +1,4 @@
-package com.base.muslim.camera.utils
+package com.jushi.library.compression.utils
 
 import android.text.format.DateFormat
 import java.text.ParseException

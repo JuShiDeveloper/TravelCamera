@@ -1,6 +1,6 @@
 package com.jushi.library.compression.utils;
 
-import com.base.muslim.camera.utils.PictureType;
+import com.jushi.library.compression.utils.PictureType;
 
 import java.io.File;
 

@@ -1,11 +1,11 @@
-package com.base.muslim.compression
+package com.jushi.library.compression
 
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
-import com.base.muslim.camera.utils.PATH
-import com.base.muslim.compression.minterface.OnCompressionPicturesListener
-import com.base.muslim.compression.minterface.OnPictureCompressionListener
+import com.jushi.library.compression.utils.PATH
+import com.jushi.library.compression.minterface.OnCompressionPicturesListener
+import com.jushi.library.compression.minterface.OnPictureCompressionListener
 import com.jushi.library.compression.luban.Luban
 import com.jushi.library.compression.luban.OnCompressListener
 import java.io.File

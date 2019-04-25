@@ -10,4 +10,7 @@
     <color name="_333333">#333333</color>
     <color name="_666666">#666666</color>
     <color name="_ffeac0">#ffeac0</color>
+    <!--黑色透明度大概48的颜色值-->
+    <color name="_78000000">#78000000</color>
+
 </resources>

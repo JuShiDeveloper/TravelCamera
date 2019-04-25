@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/edit_picture_system_bar"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/color_theme" />
+
+    <RelativeLayout
+        android:id="@+id/rl_edit_picture_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_picture_system_bar"
+        android:background="@color/color_theme">
+
+        <ImageView
+            android:id="@+id/edit_picture_backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:clickable="true"
+            android:padding="5dp"
+            android:src="@drawable/ic_arrow_back_black_48dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:clickable="false"
+            android:gravity="center"
+            android:text="@string/edit_picture"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sp" />
+
+        <TextView
+            android:id="@+id/tv_edit_picture_saveBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/bg_shadow_button_round_rectangle"
+            android:clickable="true"
+            android:padding="5dp"
+            android:text="@string/save_picture"
+            android:textColor="@color/color_theme"
+            android:textSize="@dimen/_16sp" />
+
+    </RelativeLayout>
+
+    <!--显示图片 添加贴纸等区域-->
+    <RelativeLayout
+        android:id="@+id/rl_GPUImageView_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rv_edit_picture"
+        android:layout_below="@+id/rl_edit_picture_title_bar"
+        android:clickable="true">
+
+        <jp.co.cyberagent.android.gpuimage.GPUImageView
+            android:id="@+id/edit_picture_GPUImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false" />
+
+    </RelativeLayout>
+
+
+    <!--横向显示贴纸等图标-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_edit_picture"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_above="@+id/ll_choice_edit_type" />
+
+    <!--底部显示 贴纸、滤镜、标签 -->
+    <LinearLayout
+        android:id="@+id/ll_choice_edit_type"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_edit_picture_tie_zhi_Btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_shadow_button_rectangle"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/tie_zhi"
+            android:textColor="@color/color_theme"
+            android:textSize="@dimen/_18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_edit_picture_lv_jing_Btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_shadow_button_rectangle"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/lv_jing"
+            android:textColor="@color/color_theme"
+            android:textSize="@dimen/_18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_edit_picture_biao_qian_Btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_shadow_button_rectangle"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/biao_qian"
+            android:textColor="@color/color_theme"
+            android:textSize="@dimen/_18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</RelativeLayout>

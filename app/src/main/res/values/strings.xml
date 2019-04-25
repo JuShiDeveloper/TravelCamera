@@ -20,4 +20,9 @@
     <string name="picture_success_save">拍照成功！</string>
     <string name="chu_li_ing">正在处理中</string>
     <string name="my_album">我的图库</string>
+    <string name="edit_picture">图片编辑</string>
+    <string name="save_picture">保存图片</string>
+    <string name="tie_zhi">贴纸</string>
+    <string name="lv_jing">滤镜</string>
+    <string name="biao_qian">标签</string>
 </resources>

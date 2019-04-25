@@ -1,4 +1,4 @@
-package com.base.muslim.compression.minterface
+package com.jushi.library.compression.minterface
 
 import java.io.File
 
