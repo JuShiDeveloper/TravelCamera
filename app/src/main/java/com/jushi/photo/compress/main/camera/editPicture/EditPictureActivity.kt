@@ -1,6 +1,9 @@
 package com.jushi.photo.compress.main.camera.editPicture
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.ImageFormat
 import android.net.Uri
 import android.util.Log
 import android.view.MotionEvent
@@ -10,6 +13,7 @@ import com.jushi.library.base.BaseActivity
 import com.jushi.library.utils.FileUtil
 import com.jushi.photo.compress.main.camera.editPicture.view.LableSelector
 import com.jushi.photo.compress.main.camera.editPicture.view.LableView
+import com.jushi.photo.compress.main.utils.Constansts
 import kotlinx.android.synthetic.main.activity_edit_picture_layout.*
 import kotlinx.android.synthetic.main.lable_selector_layout.view.*
 import travel.camera.photo.compress.R
@@ -17,7 +21,8 @@ import travel.camera.photo.compress.R
 /**
  * 拍照后编辑图片界面
  */
-class EditPictureActivity : BaseActivity() {
+class EditPictureActivity : BaseActivity(), LableView.ShowLabelContentListener {
+
     private lateinit var imagePath: String
     private lateinit var lableView: LableView
     private val lableList = arrayListOf<LableView>()
@@ -31,7 +36,6 @@ class EditPictureActivity : BaseActivity() {
 
     override fun initData() {
         imagePath = FileUtil.getRealFilePathFromUri(this, intent.data as Uri)
-        Log.v("yufei", "${intent.data as Uri}")
     }
 
     override fun initWidget() {
@@ -57,6 +61,7 @@ class EditPictureActivity : BaseActivity() {
         }
         params.addRule(RelativeLayout.CENTER_IN_PARENT)
         lableView.layoutParams = params
+        lableView.setShowLabelContentListener(this)
         rl_GPUImageView_area.addView(lableView)
         lableList.add(lableView)
     }
@@ -97,9 +102,37 @@ class EditPictureActivity : BaseActivity() {
         lableSelector.setLableSelectorOnClickListener(LableSelectorListener())
     }
 
+    /**
+     * 输入的标签内容显示成功
+     */
+    override fun labelContentShowSuccess() {
+        lableSelector.isShouldVisibility()
+        addLableView()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         lableView.cancelWave()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            MOOD_REQUEST_CODE -> { //点击心情跳转返回
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data == null) return
+                    val inputContent = data.getStringExtra(Constansts.INPUT_LABEl_CONTENT)
+                    lableView.showLabelContent(inputContent, LableSelector.LableType.MOOD)
+                }
+            }
+            LOCATION_REQUEST_CODE -> { //地点跳转返回
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data == null) return
+                    val inputContent = data.getStringExtra(Constansts.INPUT_LABEl_CONTENT)
+                    lableView.showLabelContent(inputContent, LableSelector.LableType.LOCATION)
+                }
+            }
+        }
     }
 
     private inner class LableSelectorListener : View.OnClickListener {

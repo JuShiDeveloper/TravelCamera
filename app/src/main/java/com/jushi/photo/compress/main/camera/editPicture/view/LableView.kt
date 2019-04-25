@@ -23,6 +23,7 @@ class LableView : LinearLayout, View.OnTouchListener, Animation.AnimationListene
     private var parentWidth = 0
     private var parentHeight = 0
     private var offset = 0 //可拖动的偏移量
+    private lateinit var sListener: ShowLabelContentListener
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -85,6 +86,7 @@ class LableView : LinearLayout, View.OnTouchListener, Animation.AnimationListene
             t = b - this.height
         }
         layout(l, t, r, b)
+        wave()
     }
 
     /**
@@ -118,7 +120,7 @@ class LableView : LinearLayout, View.OnTouchListener, Animation.AnimationListene
     /**
      * 取消动画
      */
-    fun cancelWave(){
+    fun cancelWave() {
         dot_lable_view.clearAnimation()
     }
 
@@ -139,5 +141,31 @@ class LableView : LinearLayout, View.OnTouchListener, Animation.AnimationListene
      */
     private fun isShowDot(visibility: Int) {
         dot_lable_view.visibility = visibility
+    }
+
+    /**
+     * 显示输入的内容 （心情/地点）
+     */
+    fun showLabelContent(content: String, type: LableSelector.LableType) {
+        when (type) {
+            LableSelector.LableType.MOOD -> {
+                dot_lable_view.setImageResource(R.mipmap.dot)
+            }
+            LableSelector.LableType.LOCATION -> {
+                dot_lable_view.setImageResource(R.mipmap.point_poi)
+            }
+        }
+        tv_lable_view_text.text = content
+        tv_lable_view_text.visibility = View.VISIBLE
+        wave()
+        sListener.labelContentShowSuccess()
+    }
+
+    fun setShowLabelContentListener(listener: ShowLabelContentListener) {
+        sListener = listener
+    }
+
+    interface ShowLabelContentListener {
+        fun labelContentShowSuccess()
     }
 }

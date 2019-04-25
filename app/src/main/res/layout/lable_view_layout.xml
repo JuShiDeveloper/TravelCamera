@@ -2,23 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
 
     <TextView
         android:id="@+id/tv_lable_view_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:alpha="0.9"
+        android:alpha="0.8"
         android:background="@drawable/icon_biaoqian_i"
-        android:padding="3dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="3dp"
+        android:paddingTop="3dp"
         android:textColor="@color/white"
         android:textSize="@dimen/_13sp"
+        android:backgroundTint="@color/color_theme"
         android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/dot_lable_view"
         android:layout_width="12dp"
         android:layout_height="12dp"
-        android:src="@mipmap/dot" />
+        android:src="@mipmap/dot"
+        android:layout_margin="2dp"/>
 
 </LinearLayout>

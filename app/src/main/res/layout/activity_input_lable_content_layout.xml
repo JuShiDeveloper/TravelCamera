@@ -33,7 +33,7 @@
             android:background="@drawable/bg_button_selected_round_rectangle"
             android:padding="5dp"
             android:text="@string/cancel"
-            android:textColor="@color/white"
+            android:textColor="@color/color_theme"
             android:textSize="@dimen/_16sp" />
 
         <TextView
@@ -46,7 +46,41 @@
             android:background="@drawable/bg_button_selected_round_rectangle"
             android:padding="5dp"
             android:text="@string/save"
-            android:textColor="@color/white"
+            android:textColor="@color/color_theme"
             android:textSize="@dimen/_16sp" />
     </RelativeLayout>
+
+    <EditText
+        android:id="@+id/et_input_lable_content"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/bg_shape_focus_index"
+        android:gravity="start"
+        android:hint="@string/please_input_contents"
+        android:maxLength="10"
+        android:padding="3dp"
+        android:textColor="@color/color_theme"
+        android:textSize="@dimen/_18sp" />
+
+    <TextView
+        android:id="@+id/tv_input_content_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/_10_10_10"
+        android:textColor="@color/color_theme"
+        android:textSize="@dimen/_16sp" />
+
+    <TextView
+        android:id="@+id/tv_input_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/input_limit_hint"
+        android:textColor="@color/color_theme"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:textSize="@dimen/_16sp"
+        android:visibility="invisible"/>
 </LinearLayout>
