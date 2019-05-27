@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.GridLayoutManager
@@ -19,6 +20,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.jushi.photo.compress.main.camera.editPicture.EditPictureActivity
 import com.jushi.photo.compress.main.camera.view.AlbumView
 import com.muslim.pro.imuslim.azan.portion.common.base.ViewPagerFragment
 import kotlinx.android.synthetic.main.fragment_album_layout.*
@@ -67,13 +69,16 @@ class AlbumFragment : ViewPagerFragment(), View.OnClickListener {
 
     override fun setViewListener() {
         iv_album_show_picture.setOnClickListener {
-            if (rl_title_bar.visibility != View.VISIBLE) {
-                rl_title_bar.visibility = View.VISIBLE
+            if (rl_image_tab_bar.visibility != View.VISIBLE) {
+                rl_image_tab_bar.visibility = View.VISIBLE
                 rl_album_show_picture_layout.setBackgroundColor(resources.getColor(R.color.black))
             } else {
-                rl_title_bar.visibility = View.INVISIBLE
+                rl_image_tab_bar.visibility = View.INVISIBLE
                 rl_album_show_picture_layout.setBackgroundColor(resources.getColor(R.color.white))
             }
+        }
+        tv_confirm_imageBtn.setOnClickListener {
+            startActivity(EditPictureActivity::class.java, Uri.parse(photos[position]))
         }
     }
 
@@ -127,7 +132,7 @@ class AlbumFragment : ViewPagerFragment(), View.OnClickListener {
                 rl_album_show_picture_layout.setBackgroundColor(resources.getColor(R.color.white))
             }, 700)
         } else {
-            rl_title_bar.visibility = View.INVISIBLE
+            rl_image_tab_bar.visibility = View.INVISIBLE
             rl_album_show_picture_layout.setBackgroundColor(Color.TRANSPARENT)
             rl_album_show_picture_layout.postDelayed({
                 rl_album_show_picture_layout.visibility = visibility

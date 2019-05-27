@@ -58,17 +58,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/rv_edit_picture"
-        android:layout_below="@+id/rl_edit_picture_title_bar"
-        android:clickable="true">
-
+        android:layout_below="@+id/rl_edit_picture_title_bar">
+        <!--滤镜sdk中的View-->
         <jp.co.cyberagent.android.gpuimage.GPUImageView
             android:id="@+id/edit_picture_GPUImageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="false" />
+            android:layout_height="match_parent"/>
 
     </RelativeLayout>
-
 
     <!--横向显示贴纸等图标-->
     <android.support.v7.widget.RecyclerView

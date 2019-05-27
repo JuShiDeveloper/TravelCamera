@@ -29,6 +29,11 @@
     <string name="please_input_content">输入内容</string>
     <string name="please_input_contents">请输入内容</string>
     <string name="input_limit_hint">输入的字数已达上限</string>
-    <string name="_10_10_10">你还可以输入10个字（10/10）</string>
+    <string name="_10_10_10">你还可以输入15个字（15/15）</string>
     <string name="please_input_content_after">请先输入内容</string>
+    <string name="edit">编辑</string>
+
+    <string name="active_success">激活引擎成功</string>
+    <string name="already_activated">引擎已激活，无需再次激活</string>
+    <string name="active_failed">引擎激活失败，错误码为 %d</string>
 </resources>

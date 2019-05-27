@@ -1,6 +1,7 @@
 package com.muslim.pro.imuslim.azan.portion.common.base
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -94,6 +95,12 @@ abstract class ViewPagerFragment : Fragment() {
     fun startActivity(bundle: Bundle, cls: Class<*>) {
         val intent = Intent(context, cls)
         intent.putExtra(cls.name, bundle)
+        context?.startActivity(intent)
+    }
+
+    fun startActivity(cls: Class<*>, uri: Uri) {
+        val intent = Intent(context, cls)
+        intent.data = uri
         context?.startActivity(intent)
     }
 }

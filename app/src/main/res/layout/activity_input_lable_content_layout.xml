@@ -58,7 +58,7 @@
         android:background="@drawable/bg_shape_focus_index"
         android:gravity="start"
         android:hint="@string/please_input_contents"
-        android:maxLength="10"
+        android:maxLength="15"
         android:padding="3dp"
         android:textColor="@color/color_theme"
         android:textSize="@dimen/_18sp" />

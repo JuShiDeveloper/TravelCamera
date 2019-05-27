@@ -13,6 +13,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jushi.library.R;
+
 
 /**
  * changed by jushi
@@ -105,7 +107,6 @@ public class DragScaleView extends AppCompatImageView implements View.OnTouchLis
             dragDirection = getDirection(v, (int) event.getX(),
                     (int) event.getY());
         }
-
         if (action == MotionEvent.ACTION_POINTER_DOWN) {
             oriLeft = v.getLeft();
             oriRight = v.getRight();
@@ -116,7 +117,6 @@ public class DragScaleView extends AppCompatImageView implements View.OnTouchLis
             dragDirection = TOUCH_TWO;
             oriDis = distance(event);
         }
-
         // 处理拖动事件
         delDrag(v, event, action);
         invalidate();

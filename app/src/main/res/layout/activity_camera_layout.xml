@@ -22,7 +22,12 @@
             android:id="@+id/camera_SurfaceView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
+        <!--画人脸矩形框的View-->
+        <com.jushi.photo.compress.main.camera.arcFace.FaceRectView
+            android:id="@+id/FaceRectView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <!--画网格的View-->
         <com.jushi.photo.compress.main.camera.view.CameraGrid
             android:id="@+id/CameraGrid"
             android:layout_width="match_parent"
@@ -85,8 +90,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:src="@mipmap/album_icon"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:src="@mipmap/album_icon" />
 
     </RelativeLayout>
 

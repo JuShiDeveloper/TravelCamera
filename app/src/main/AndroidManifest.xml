@@ -10,6 +10,8 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
+    <!--人脸识别-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".App"
@@ -19,11 +21,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.jushi.photo.compress.WelcomeActivity" >
+        <activity android:name="com.jushi.photo.compress.WelcomeActivity">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
         <activity android:name="com.jushi.photo.compress.main.MainActivity">
@@ -39,7 +41,7 @@
         <activity android:name="com.jushi.photo.compress.main.photoCompress.CompressActivity" />
         <activity android:name="com.jushi.photo.compress.main.camera.editPicture.EditPictureActivity" />
         <activity android:name="com.jushi.photo.compress.main.camera.album.AlbumActivity" />
-        <activity android:name="com.jushi.photo.compress.main.camera.editPicture.InputLableContentActivity"/>
+        <activity android:name="com.jushi.photo.compress.main.camera.editPicture.InputLableContentActivity" />
 
         <provider
             android:name="com.jushi.library.takingPhoto.util.ImageProvider"

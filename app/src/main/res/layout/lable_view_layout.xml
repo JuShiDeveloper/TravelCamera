@@ -16,7 +16,7 @@
         android:paddingBottom="3dp"
         android:paddingTop="3dp"
         android:textColor="@color/white"
-        android:textSize="@dimen/_13sp"
+        android:textSize="@dimen/_12sp"
         android:backgroundTint="@color/color_theme"
         android:visibility="gone"/>
 

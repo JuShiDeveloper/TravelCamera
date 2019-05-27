@@ -1,15 +1,17 @@
 package com.jushi.photo.compress.main.camera
 
+import android.Manifest
 import android.app.Activity
 import android.content.ComponentCallbacks2
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.hardware.Camera
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.view.Gravity
-import android.view.MotionEvent
-import android.view.SurfaceHolder
-import android.view.View
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.view.*
 import android.view.animation.ScaleAnimation
 import android.widget.RelativeLayout
 import com.bumptech.glide.Glide
@@ -17,6 +19,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.jushi.library.base.BaseActivity
 import com.jushi.library.takingPhoto.PictureHelper
 import com.jushi.photo.compress.main.camera.album.AlbumActivity
+import com.jushi.photo.compress.main.camera.arcFace.FaceRectView
 import com.jushi.photo.compress.main.camera.editPicture.EditPictureActivity
 import com.jushi.photo.compress.main.camera.presenter.CameraPresenter
 import com.jushi.photo.compress.main.camera.utils.FlashMode
@@ -25,7 +28,7 @@ import kotlinx.android.synthetic.main.activity_camera_layout.*
 import travel.camera.photo.compress.R
 
 /**
- * 贴图相机界面
+ * 贴图相机界面（拍照界面）
  */
 class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
     private lateinit var cameraPresenter: CameraPresenter
@@ -36,6 +39,12 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
     private var mode: Int = -1
     private var dist: Float = 0f
     private val handler: Handler = Handler()
+    /**
+     * 人脸识别所需的权限
+     */
+    private val NEEDED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE)
+    private val ACTION_REQUEST_PERMISSIONS = 0x001
+
 
     override fun setPageLayout() {
         setContentView(R.layout.activity_camera_layout, false, true)
@@ -58,6 +67,17 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
 
     override fun initData() {
         cameraPresenter = CameraPresenter(this, this)
+    }
+
+    /**
+     * 初始化人脸sdk
+     */
+    override fun initFaceEngine() {
+        if (!checkPermissions(NEEDED_PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, NEEDED_PERMISSIONS, ACTION_REQUEST_PERMISSIONS)
+        } else {
+            cameraPresenter.initFaceEngine()
+        }
     }
 
     override fun setOnViewListener() {
@@ -192,7 +212,29 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
         var uri = if (imagePath.startsWith("file:")) Uri.parse(imagePath) else Uri.parse("file://$imagePath")
         val intent = Intent(this, EditPictureActivity::class.java)
         intent.data = uri
-        startActivity(intent)
+//        startActivity(intent)
+    }
+
+    /**
+     * 获取显示相机预览画面的View
+     */
+    override fun getPreviewView(): View = camera_SurfaceView
+
+    /**
+     * 获取显示人脸框的View
+     */
+    override fun getFaceRectView(): FaceRectView = FaceRectView
+
+
+    private fun checkPermissions(neededPermissions: Array<String>?): Boolean {
+        if (neededPermissions == null || neededPermissions.isEmpty()) {
+            return true
+        }
+        var allGranted = true
+        for (neededPermission in neededPermissions) {
+            allGranted = allGranted and (ContextCompat.checkSelfPermission(this.applicationContext, neededPermission) == PackageManager.PERMISSION_GRANTED)
+        }
+        return allGranted
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -200,5 +242,27 @@ class CameraActivity : BaseActivity(), CameraView, SurfaceHolder.Callback {
         when (requestCode) {
 
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            ACTION_REQUEST_PERMISSIONS -> {
+                var isAllGranted = true
+                for (grantResult in grantResults) {
+                    isAllGranted = isAllGranted and (grantResult == PackageManager.PERMISSION_GRANTED)
+                }
+                if (isAllGranted) {
+                    cameraPresenter.initFaceEngine()
+                } else {
+                    showTus("权限被拒绝")
+                }
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraPresenter.stopPreview()
     }
 }

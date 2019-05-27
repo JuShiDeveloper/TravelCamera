@@ -54,12 +54,12 @@ class InputLableContentActivity : BaseActivity(), TextWatcher {
     @SuppressLint("SetTextI18n")
     override fun afterTextChanged(s: Editable?) {
         var count = s.toString().length
-        var num = 10 - count
-        tv_input_content_hint.text = "你还可以输入$num 个字（$num/10）"
+        var num = 15 - count
+        tv_input_content_hint.text = "你还可以输入$num 个字（$num/15）"
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        if (start >= 9) {
+        if (start >= 14) {
             showToastAtLocation(getString(R.string.input_limit_hint), Gravity.CENTER)
             tv_input_hint.visibility = View.VISIBLE
             return

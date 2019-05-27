@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.ImageFormat
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.hardware.Camera
@@ -13,7 +14,12 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.SurfaceHolder
+import android.view.View
+import com.arcsoft.face.*
 import com.jushi.library.systemBarUtils.SystemBarUtil
+import com.jushi.photo.compress.main.camera.arcFace.DrawHelper
+import com.jushi.photo.compress.main.camera.arcFace.DrawInfo
+import com.jushi.photo.compress.main.camera.arcFace.FaceRectView
 import com.jushi.photo.compress.main.camera.helper.CameraHelper
 import com.jushi.photo.compress.main.camera.utils.FlashMode
 import com.jushi.photo.compress.main.camera.utils.ImageUtil
@@ -26,10 +32,10 @@ import java.util.*
 
 /**
  * 拍照逻辑处理类
- * @param width SurfaceView的宽
- * @param height SurfaceView的高
+ *
  */
-class CameraPresenter(private val cameraView: CameraView, private val context: Context) : Camera.PictureCallback, SavePictureUtil.PictureSaveListener {
+class CameraPresenter(private val cameraView: CameraView, private val context: Context) : Camera.PictureCallback, SavePictureUtil.PictureSaveListener, Camera.PreviewCallback {
+
     private val screenWidth = (context as Activity).windowManager.defaultDisplay.width
     private val screenHeight = (context as Activity).windowManager.defaultDisplay.height
     private var cameraHelper: CameraHelper = CameraHelper(context)
@@ -44,6 +50,17 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
     private var curZoomValue = 0 //放大缩小
     private lateinit var bundle: Bundle
     private lateinit var data: ByteArray
+    /**
+     * ------------人脸识别相关-----------------
+     */
+    private lateinit var drawHelper: DrawHelper
+    private lateinit var previewView: View
+    private lateinit var faceRectView: FaceRectView
+    private var faceEngine: FaceEngine? = null
+    private var afCode = -1
+    private val processMask = FaceEngine.ASF_FACE_DETECT or FaceEngine.ASF_AGE or
+            FaceEngine.ASF_FACE3DANGLE or FaceEngine.ASF_GENDER or FaceEngine.ASF_LIVENESS
+
 
     /**
      * 改变闪光灯你状态
@@ -85,12 +102,15 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
             camera!!.setPreviewDisplay(holder)
             initCamera()
             camera!!.startPreview()
+            cameraView.initFaceEngine()
         }
     }
 
     private fun initCamera() {
+        camera!!.setPreviewCallback(this)
         cameraParameters = camera!!.parameters
-        cameraParameters.pictureFormat = PixelFormat.JPEG
+//        cameraParameters.pictureFormat = PixelFormat.JPEG
+        cameraParameters.previewFormat = ImageFormat.NV21
         savePictureSize = getBastSize(targetWidth, targetHeight, cameraParameters.supportedPictureSizes)!!
         previewSize = getBastSize(screenWidth, getPreviewTargetHeight(), cameraParameters.supportedPreviewSizes)!!
         if (savePictureSize != null) {
@@ -112,7 +132,12 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
         }
         camera!!.startPreview()
         camera!!.cancelAutoFocus()// 2如果要实现连续的自动对焦，这一句必须加上
+        previewView = cameraView.getPreviewView()
+        faceRectView = cameraView.getFaceRectView()
+        drawHelper = DrawHelper(previewSize.width, previewSize.height, previewView.width, previewView.height,
+                90, currentCameraId, true)
     }
+
 
     /**
      * 获得预览的目标高度
@@ -175,6 +200,7 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
         } else { //切换摄像头失败
             cameraView.showTus(context.getString(R.string.change_camera_hint))
         }
+
     }
 
     /**
@@ -183,8 +209,10 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
     fun releaseCamera() {
         try {
             if (camera != null) {
-                camera?.stopPreview()
-                camera?.release()
+                camera!!.setPreviewCallback(null)
+                camera!!.stopPreview()
+                camera!!.lock()
+                camera!!.release()
                 camera = null
             }
         } catch (e: Exception) {
@@ -278,9 +306,12 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
     /**
      * 重新开始预览
      */
-    private fun startPreview() {
-        if (camera == null) return
-        camera!!.startPreview()
+    fun startPreview() {
+        if (camera != null) {
+            camera!!.startPreview()
+        }else{
+            initCamera(holder)
+        }
     }
 
     override fun onPictureTaken(data: ByteArray?, camera: Camera?) {
@@ -297,6 +328,67 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
      */
     override fun pictureSaveSuccess(imagePath: String) {
         cameraView.pictureSaveSuccess(imagePath)
-        ImageUtil.notifySystemScanImage(context,imagePath)
+        ImageUtil.notifySystemScanImage(context, imagePath)
     }
+
+    /**
+     * 初始化人脸识别sdk
+     */
+    fun initFaceEngine() {
+        faceEngine = FaceEngine()
+        afCode = faceEngine!!.init(context, FaceEngine.ASF_DETECT_MODE_VIDEO, FaceEngine.ASF_OP_270_ONLY,
+                16, 20, processMask)
+        val versionInfo = VersionInfo()
+        faceEngine!!.getVersion(versionInfo)
+        if (afCode != ErrorInfo.MOK) {
+            Log.v("yufie", "人脸识别sdk初始化失败$afCode")
+        }
+    }
+
+    //停止预览
+    fun stopPreview() {
+        releaseCamera()
+    }
+
+    /**
+     * 返回相机拍预览的每一帧数据用于人脸识别(nv21格式)
+     */
+    override fun onPreviewFrame(nv21: ByteArray, camera: Camera) {
+        if (faceRectView != null) {
+            faceRectView.clearFaceInfo()
+        }
+        val faceInfoList = ArrayList<FaceInfo>()
+        var code = faceEngine!!.detectFaces(nv21, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfoList)
+        Log.v("yufei", "size = ${faceInfoList.size}")
+        Log.v("yufei", "code = $code")
+        if (code == ErrorInfo.MOK && faceInfoList.size > 0) {
+            code = faceEngine!!.process(nv21, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfoList, processMask)
+            if (code != ErrorInfo.MOK) {
+                return
+            }
+        } else {
+            return
+        }
+        val ageInfoList = ArrayList<AgeInfo>()
+        val genderInfoList = ArrayList<GenderInfo>()
+        val face3DAngleList = ArrayList<Face3DAngle>()
+        val faceLivenessInfoList = ArrayList<LivenessInfo>()
+        val ageCode = faceEngine!!.getAge(ageInfoList)
+        val genderCode = faceEngine!!.getGender(genderInfoList)
+        val face3DAngleCode = faceEngine!!.getFace3DAngle(face3DAngleList)
+        val livenessCode = faceEngine!!.getLiveness(faceLivenessInfoList)
+        //有其中一个的错误码不为0，return
+        if (ageCode or genderCode or face3DAngleCode or livenessCode != ErrorInfo.MOK) {
+            return
+        }
+        if (faceRectView != null && drawHelper != null) {
+            val drawInfoList = ArrayList<DrawInfo>()
+            for (i in faceInfoList.indices) {
+                drawInfoList.add(DrawInfo(faceInfoList[i].rect, genderInfoList[i].gender, ageInfoList[i].age, faceLivenessInfoList[i].liveness, null))
+            }
+            drawHelper.draw(faceRectView, drawInfoList)
+        }
+    }
+
+
 }
