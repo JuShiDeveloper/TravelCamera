@@ -12,7 +12,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.jushi.library.base.BaseActivity
-import com.jushi.library.customView.RotateImageView
 import com.jushi.library.customView.dragScaleView.DragScaleView
 import com.jushi.library.utils.FileUtil
 import com.jushi.photo.compress.main.camera.editPicture.utils.TagsUtil

@@ -70,7 +70,7 @@ object PictureCompression {
         initialize(context)
         Luban.with(context)
                 .load(file)
-                .ignoreBy(20)
+                .ignoreBy(60)
                 .setTargetDir(getTargetDir())
                 .setFocusAlpha(false)
                 .setRenameListener { getRename() }
