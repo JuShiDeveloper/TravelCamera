@@ -80,10 +80,14 @@ class MainActivity : BaseActivity() {
 
     override fun setOnViewListener() {
         MeiHuaButton.setOnClickListener {
+            showToast("敬请期待")
+            return@setOnClickListener
             //美化按钮点击事件
             startActivity(MeiHuaActivity::class.java)
         }
         PinTuButton.setOnClickListener {
+            showToast("敬请期待")
+            return@setOnClickListener
             //拼图按钮
             startActivity(PinTuActivity::class.java)
         }
