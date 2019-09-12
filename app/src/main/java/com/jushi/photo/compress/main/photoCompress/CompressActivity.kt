@@ -250,6 +250,8 @@ class CompressActivity : BaseActivity(), OnPictureCompressionListener {
             }
             tv_compress_loading.visibility = View.INVISIBLE
             tv_compress_picture.text = getString(R.string.second_compress)
+            tv_compress_save_button.isEnabled = true
+            tv_compress_save_button.setTextColor(resources.getColor(R.color.color_theme))
         }
 
         override fun onAnimationRepeat(animation: Animator?) {
