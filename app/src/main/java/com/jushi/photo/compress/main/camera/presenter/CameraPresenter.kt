@@ -354,40 +354,40 @@ class CameraPresenter(private val cameraView: CameraView, private val context: C
      * 返回相机拍预览的每一帧数据用于人脸识别(nv21格式)
      */
     override fun onPreviewFrame(nv21: ByteArray, camera: Camera) {
-        if (faceRectView != null) {
-            faceRectView.clearFaceInfo()
-        }
-        val faceInfoList = ArrayList<FaceInfo>()
-        var code = faceEngine!!.detectFaces(nv21, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfoList)
-        Log.v("yufei", "size = ${faceInfoList.size}")
-        Log.v("yufei", "code = $code")
-        if (code == ErrorInfo.MOK && faceInfoList.size > 0) {
-            code = faceEngine!!.process(nv21, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfoList, processMask)
-            if (code != ErrorInfo.MOK) {
-                return
-            }
-        } else {
-            return
-        }
-        val ageInfoList = ArrayList<AgeInfo>()
-        val genderInfoList = ArrayList<GenderInfo>()
-        val face3DAngleList = ArrayList<Face3DAngle>()
-        val faceLivenessInfoList = ArrayList<LivenessInfo>()
-        val ageCode = faceEngine!!.getAge(ageInfoList)
-        val genderCode = faceEngine!!.getGender(genderInfoList)
-        val face3DAngleCode = faceEngine!!.getFace3DAngle(face3DAngleList)
-        val livenessCode = faceEngine!!.getLiveness(faceLivenessInfoList)
-        //有其中一个的错误码不为0，return
-        if (ageCode or genderCode or face3DAngleCode or livenessCode != ErrorInfo.MOK) {
-            return
-        }
-        if (faceRectView != null && drawHelper != null) {
-            val drawInfoList = ArrayList<DrawInfo>()
-            for (i in faceInfoList.indices) {
-                drawInfoList.add(DrawInfo(faceInfoList[i].rect, genderInfoList[i].gender, ageInfoList[i].age, faceLivenessInfoList[i].liveness, null))
-            }
-            drawHelper.draw(faceRectView, drawInfoList)
-        }
+//        if (faceRectView != null) {
+//            faceRectView.clearFaceInfo()
+//        }
+//        val faceInfoList = ArrayList<FaceInfo>()
+//        var code = faceEngine!!.detectFaces(nv21, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfoList)
+//        Log.v("yufei", "size = ${faceInfoList.size}")
+//        Log.v("yufei", "code = $code")
+//        if (code == ErrorInfo.MOK && faceInfoList.size > 0) {
+//            code = faceEngine!!.process(nv21, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfoList, processMask)
+//            if (code != ErrorInfo.MOK) {
+//                return
+//            }
+//        } else {
+//            return
+//        }
+//        val ageInfoList = ArrayList<AgeInfo>()
+//        val genderInfoList = ArrayList<GenderInfo>()
+//        val face3DAngleList = ArrayList<Face3DAngle>()
+//        val faceLivenessInfoList = ArrayList<LivenessInfo>()
+//        val ageCode = faceEngine!!.getAge(ageInfoList)
+//        val genderCode = faceEngine!!.getGender(genderInfoList)
+//        val face3DAngleCode = faceEngine!!.getFace3DAngle(face3DAngleList)
+//        val livenessCode = faceEngine!!.getLiveness(faceLivenessInfoList)
+//        //有其中一个的错误码不为0，return
+//        if (ageCode or genderCode or face3DAngleCode or livenessCode != ErrorInfo.MOK) {
+//            return
+//        }
+//        if (faceRectView != null && drawHelper != null) {
+//            val drawInfoList = ArrayList<DrawInfo>()
+//            for (i in faceInfoList.indices) {
+//                drawInfoList.add(DrawInfo(faceInfoList[i].rect, genderInfoList[i].gender, ageInfoList[i].age, faceLivenessInfoList[i].liveness, null))
+//            }
+//            drawHelper.draw(faceRectView, drawInfoList)
+//        }
     }
 
 

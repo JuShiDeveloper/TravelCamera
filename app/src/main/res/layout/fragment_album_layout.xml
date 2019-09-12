@@ -13,39 +13,4 @@
         android:layout_margin="5dp"
         android:scrollbars="none" />
 
-    <RelativeLayout
-        android:id="@+id/rl_album_show_picture_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="invisible">
-
-        <com.jushi.library.customView.scaleImageView.ScaleImageView
-            android:id="@+id/iv_album_show_picture"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitCenter" />
-
-        <RelativeLayout
-            android:id="@+id/rl_image_tab_bar"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_alignParentBottom="true"
-            android:visibility="invisible">
-
-            <TextView
-                android:id="@+id/tv_confirm_imageBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:padding="6dp"
-                android:background="@drawable/bg_button_selected_round_rectangle"
-                android:text="@string/edit"
-                android:textColor="@color/color_theme"
-                android:textSize="@dimen/_16sp" />
-
-        </RelativeLayout>
-
-    </RelativeLayout>
-
 </RelativeLayout>

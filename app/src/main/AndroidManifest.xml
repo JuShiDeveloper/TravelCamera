@@ -52,6 +52,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />
         </provider>
+        <activity
+            android:name="com.jushi.photo.compress.main.camera.album.AlbumPreviewActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -2,12 +2,16 @@ package com.jushi.photo.compress.main.camera.album
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
@@ -35,10 +39,6 @@ class AlbumFragment : ViewPagerFragment(), View.OnClickListener {
     private lateinit var adapter: AlbumAdapter
     private lateinit var animatorSet: AnimatorSet
     private var position = 0
-    private var pivotX = 0.0f
-    private var pivotY = 0.0f
-    private val PIVOT_X = "pivot_x"
-    private val PIVOT_Y = "pivot_y"
     private val PHOTOS_INDEX = "photos_index"
 
     companion object {
@@ -68,18 +68,7 @@ class AlbumFragment : ViewPagerFragment(), View.OnClickListener {
     }
 
     override fun setViewListener() {
-        iv_album_show_picture.setOnClickListener {
-            if (rl_image_tab_bar.visibility != View.VISIBLE) {
-                rl_image_tab_bar.visibility = View.VISIBLE
-                rl_album_show_picture_layout.setBackgroundColor(resources.getColor(R.color.black))
-            } else {
-                rl_image_tab_bar.visibility = View.INVISIBLE
-                rl_album_show_picture_layout.setBackgroundColor(resources.getColor(R.color.white))
-            }
-        }
-        tv_confirm_imageBtn.setOnClickListener {
-            startActivity(EditPictureActivity::class.java, Uri.parse(photos[position]))
-        }
+
     }
 
     override fun onFragmentVisibleChange(isVisible: Boolean) {
@@ -95,58 +84,16 @@ class AlbumFragment : ViewPagerFragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        val bundle = v?.tag as Bundle
-        pivotX = bundle.getFloat(PIVOT_X)
-        pivotY = bundle.getFloat(PIVOT_Y)
-        position = bundle.getInt(PHOTOS_INDEX)
-        showPicture(position)
-        initAnimator(View.VISIBLE, 0.1f, 1f)
-    }
-
-    private fun showPicture(position: Int) {
-        iv_album_show_picture.reset()
-        Glide.with(context!!).load(photos[position]).into(iv_album_show_picture)
-    }
-
-    private fun initAnimator(visibility: Int, scaleStart: Float, scaleEnd: Float) {
-        iv_album_show_picture.pivotX = pivotX + 15
-        iv_album_show_picture.pivotY = pivotY - 400
-        showView(visibility)
-        animatorSet = AnimatorSet()
-        val scaleX = ObjectAnimator.ofFloat(iv_album_show_picture, "scaleX", scaleStart, scaleEnd)
-        val scaleY = ObjectAnimator.ofFloat(iv_album_show_picture, "scaleY", scaleStart, scaleEnd)
-        animatorSet.duration = 600
-        animatorSet.interpolator = LinearInterpolator()
-        animatorSet.play(scaleX).with(scaleY)
-        animatorSet.start()
-    }
-
-    /**
-     * 显示与隐藏缩放的View
-     */
-    private fun showView(visibility: Int) {
-        if (visibility == View.VISIBLE) {
-            rl_album_show_picture_layout.visibility = visibility
-            albumView?.viewPagerCanScrollable(false)
-            rl_album_show_picture_layout.postDelayed({
-                rl_album_show_picture_layout.setBackgroundColor(resources.getColor(R.color.white))
-            }, 700)
-        } else {
-            rl_image_tab_bar.visibility = View.INVISIBLE
-            rl_album_show_picture_layout.setBackgroundColor(Color.TRANSPARENT)
-            rl_album_show_picture_layout.postDelayed({
-                rl_album_show_picture_layout.visibility = visibility
-                albumView?.viewPagerCanScrollable(true)
-            }, 600)
+        position = v?.tag as Int
+        val intent = Intent(context, AlbumPreviewActivity::class.java)
+        intent.putExtra(AlbumPreviewActivity.EXTRA_KEY_POSITION, position)
+        intent.putExtra(AlbumPreviewActivity.EXTRA_KEY_PHOTOS, photos)
+        try {
+            val optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity as Activity, v, "app_name")
+            ContextCompat.startActivity(context!!, intent, optionsCompat.toBundle())
+        } catch (e: Exception) {
+            startActivity(intent)
         }
-    }
-
-    fun backPressed(): Boolean {
-        if (rl_album_show_picture_layout.visibility == View.VISIBLE) {
-            initAnimator(View.GONE, 1f, 0.1f)
-            return false
-        }
-        return true
     }
 
     /**
@@ -166,29 +113,11 @@ class AlbumFragment : ViewPagerFragment(), View.OnClickListener {
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(holder.image)
             if (listener != null) {
-                var x = 0f
-                var y = 0f
-                holder.itemView.setOnTouchListener { v, event ->
-                    when (event.action) {
-                        MotionEvent.ACTION_DOWN -> {
-                            x = event.rawX
-                            y = event.rawY
-                        }
-                        MotionEvent.ACTION_UP -> {
-                            val bundle = Bundle()
-                            bundle.putFloat(PIVOT_X, x)
-                            bundle.putFloat(PIVOT_Y, y)
-                            bundle.putInt(PHOTOS_INDEX, position)
-                            holder.itemView.tag = bundle
-                            listener?.onClick(holder.itemView)
-                            return@setOnTouchListener true
-                        }
-                    }
-                    return@setOnTouchListener true
+                holder.itemView.setOnClickListener {
+                    holder.itemView.tag = position
+                    listener?.onClick(holder.itemView)
                 }
-
             }
-
         }
 
         fun setOnItemClickListener(listener: View.OnClickListener) {

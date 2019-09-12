@@ -61,11 +61,6 @@ class AlbumActivity : BaseActivity(), ViewPager.OnPageChangeListener , AlbumView
         pageIndex = p0
     }
 
-    override fun onBackPressed() {
-        if ((pageAdapter.getItem(pageIndex) as AlbumFragment).backPressed()) {
-            super.onBackPressed()
-        }
-    }
 
     private fun getPage(position: Int): AlbumFragment {
         var page = pages[albumPaths[position]]
