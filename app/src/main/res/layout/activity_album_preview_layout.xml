@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/rl_title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_theme">
@@ -39,6 +39,33 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/preview_ViewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rl_title_bar"
+        android:background="@color/black"/>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_edit_photo_btn_container"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/tv_edit_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_shadow_button_round_rectangle"
+            android:paddingBottom="6dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="6dp"
+            android:text="@string/edit"
+            android:textColor="@color/color_theme"
+            android:textSize="@dimen/_16sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

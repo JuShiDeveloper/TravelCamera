@@ -2,6 +2,7 @@ package com.jushi.photo.compress.main.camera.album
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.ViewPager
 import android.view.View
@@ -72,7 +73,7 @@ class AlbumActivity : BaseActivity(), ViewPager.OnPageChangeListener , AlbumView
         return page
     }
 
-    inner class ViewPagerAdapter(private val fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    inner class ViewPagerAdapter(private val fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
         override fun getItem(p0: Int): Fragment = getPage(p0)
 

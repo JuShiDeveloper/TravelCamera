@@ -1,6 +1,7 @@
 package com.jushi.photo.compress.main.camera.album
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.jushi.library.base.BaseActivity
 import com.jushi.library.customView.scaleImageView.ScaleImageView
+import com.jushi.photo.compress.main.camera.editPicture.EditPictureActivity
 import kotlinx.android.synthetic.main.activity_album_preview_layout.*
 import travel.camera.photo.compress.R
 
@@ -25,8 +27,6 @@ class AlbumPreviewActivity : BaseActivity(), ViewPager.OnPageChangeListener {
     private var index: Int = 0
     private val images = ArrayList<ScaleImageView>()
 
-
-//startActivity(EditPictureActivity::class.java, Uri.parse(photos[position]))
 
     override fun setPageLayout() {
         setContentView(R.layout.activity_album_preview_layout, true, true)
@@ -53,6 +53,20 @@ class AlbumPreviewActivity : BaseActivity(), ViewPager.OnPageChangeListener {
     override fun setOnViewListener() {
         iv_backBtn_album.setOnClickListener { finish() }
         preview_ViewPager.addOnPageChangeListener(this)
+        //编辑按钮
+        tv_edit_btn.setOnClickListener {
+            startActivity(EditPictureActivity::class.java, Uri.parse(photos[index]))
+        }
+        setImageViewClickListener()
+    }
+
+    private fun setImageViewClickListener() {
+        images[index].setOnClickListener {
+            ll_edit_photo_btn_container.visibility = if (ll_edit_photo_btn_container.visibility == View.INVISIBLE)
+                View.VISIBLE else View.INVISIBLE
+            preview_ViewPager.setBackgroundColor(if (ll_edit_photo_btn_container.visibility == View.VISIBLE)
+                resources.getColor(R.color.white) else resources.getColor(R.color.black))
+        }
     }
 
     override fun onPageScrollStateChanged(p0: Int) {
@@ -64,6 +78,8 @@ class AlbumPreviewActivity : BaseActivity(), ViewPager.OnPageChangeListener {
 
     override fun onPageSelected(p0: Int) {
         tv_photo_count.text = "${p0 + 1}/${photos.size}"
+        index = p0
+        setImageViewClickListener()
     }
 
     inner class ViewPagerAdapter : PagerAdapter() {

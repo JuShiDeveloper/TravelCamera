@@ -1,6 +1,7 @@
 package com.jushi.library.base
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -110,6 +111,12 @@ abstract class BaseActivity : AppCompatActivity() {
     fun startActivity(cls: Class<*>, bundle: Bundle) {
         var intent = Intent(this, cls)
         intent.putExtra(cls.name, bundle)
+        startActivity(intent)
+    }
+
+    fun startActivity(cls: Class<*>, uri: Uri) {
+        val intent = Intent(this, cls)
+        intent.data = uri
         startActivity(intent)
     }
 
